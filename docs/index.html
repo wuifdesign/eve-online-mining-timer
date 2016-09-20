@@ -220,24 +220,18 @@
                             <input type="text" v-model="settings.cargo_limit" v-on:change="saveSettings" class="form-control" id="warning-limit" placeholder="Waring Cargo Limit">
                         </div>
                         <b>Task finished Sound</b>
-                        <div class="radio">
-                            <label><input type="radio" value="sound-1" v-on:change="saveSettings" v-model="settings.task_sound">Sound 1 <a href="#" v-on:click.prevent="playSound('sound-1')"><i class="fa fa-play-circle-o"></i></a></label>
-                        </div>
-                        <div class="radio">
-                            <label><input type="radio" value="sound-2" v-on:change="saveSettings" v-model="settings.task_sound">Sound 2 <a href="#" v-on:click.prevent="playSound('sound-2')"><i class="fa fa-play-circle-o"></i></a></label>
-                        </div>
-                        <div class="radio">
-                            <label><input type="radio" value="sound-3" v-on:change="saveSettings" v-model="settings.task_sound">Sound 3 <a href="#" v-on:click.prevent="playSound('sound-3')"><i class="fa fa-play-circle-o"></i></a></label>
+                        <div class="radio" v-for="(key, value) in sounds">
+                            <label>
+                                <input type="radio" v-bind:value="key" v-on:change="saveSettings" v-model="settings.task_sound">{{ value }}
+                                <a href="#" v-on:click.prevent="playSound(key)"><i class="fa fa-play-circle-o"></i></a>
+                            </label>
                         </div>
                         <b>Cargo Full Sound</b>
-                        <div class="radio">
-                            <label><input type="radio" value="sound-1" v-on:change="saveSettings" v-model="settings.cargo_full_sound">Sound 1 <a href="#" v-on:click.prevent="playSound('sound-1')"><i class="fa fa-play-circle-o"></i></a></label>
-                        </div>
-                        <div class="radio">
-                            <label><input type="radio" value="sound-2" v-on:change="saveSettings" v-model="settings.cargo_full_sound">Sound 2 <a href="#" v-on:click.prevent="playSound('sound-2')"><i class="fa fa-play-circle-o"></i></a></label>
-                        </div>
-                        <div class="radio">
-                            <label><input type="radio" value="sound-3" v-on:change="saveSettings" v-model="settings.cargo_full_sound">Sound 3 <a href="#" v-on:click.prevent="playSound('sound-3')"><i class="fa fa-play-circle-o"></i></a></label>
+                        <div class="radio" v-for="(key, value) in sounds">
+                            <label>
+                                <input type="radio" v-bind:value="key" v-on:change="saveSettings" v-model="settings.cargo_full_sound">{{ value }}
+                                <a href="#" v-on:click.prevent="playSound(key)"><i class="fa fa-play-circle-o"></i></a>
+                            </label>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -247,9 +241,7 @@
             </div>
         </div>
 
-        <audio id="sound-1" src="./assets/audio/sound-1.mp3"></audio>
-        <audio id="sound-2" src="./assets/audio/sound-2.mp3"></audio>
-        <audio id="sound-3" src="./assets/audio/sound-3.mp3"></audio>
+        <div id="app-audio-holder"></div>
     </div>
 
     <script src="./assets/js/vendor.min.js" type="text/javascript"></script>

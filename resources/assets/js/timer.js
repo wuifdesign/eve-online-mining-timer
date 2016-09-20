@@ -3,6 +3,16 @@
 
     var configData;
 
+    var sounds = {
+        'sound-1': 'Sound 1',
+        'sound-2': 'Sound 2',
+        'sound-3': 'Sound 3',
+        'sound-4': 'Sound 4',
+        'sound-5': 'Sound 5',
+        'sound-6': 'Sound 6',
+        'sound-7': 'Sound 7'
+    };
+
     var parseScanResult = function (result) {
         var scan_data = [];
         $.each(result.split('\n'), function (index, element) {
@@ -185,10 +195,16 @@
     });
 
     var initApp = function () {
+
+        $.each(sounds, function(key, value) {
+            $('#app-audio-holder').append('<audio id="' + key + '" src="./assets/audio/' + key + '.mp3"></audio>');
+        });
+
         var miningApp = new Vue({
             el: '#mining-app',
             data: {
                 cargo: 0,
+                sounds: sounds,
                 scanner_data: '',
                 current_ship_index: null,
                 ships: [],
