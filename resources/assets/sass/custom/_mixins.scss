@@ -1,0 +1,59 @@
+@mixin border-radius($border-radius: $border-radius-base) {
+    border-radius: $border-radius;
+}
+
+@mixin no-user-select() {
+    @include user-select(none);
+}
+
+@mixin transition($transition...) {
+    -webkit-transition: $transition;
+    -o-transition: $transition;
+    transition: $transition;
+}
+
+@mixin opacity($opacity: 1) {
+    opacity: $opacity;
+}
+
+@mixin gradient-directional-free($deg: 45deg, $color-stops...) {
+  background-repeat: repeat-x;
+  background: nth(nth($color-stops, 1), 1);
+  background-image: -webkit-linear-gradient($deg, $color-stops);
+  background-image: -o-linear-gradient($deg, $color-stops);
+  background-image: linear-gradient($deg, $color-stops);
+}
+
+@mixin caret($direction: 'bottom', $size: 5px, $color: #fff) {
+  border: $size solid transparent;
+
+  @if $direction == 'bottom' {
+    border-bottom: 0;
+    border-top: $size solid $color;
+  } @else if $direction == 'top' {
+    border-top: 0;
+    border-bottom: $size solid $color;
+  } @else if $direction == 'left' {
+    border-left:0;
+    border-right: $size solid $color;
+  } @else if $direction == 'right' {
+    border-right: 0;
+    border-left: $size solid $color;
+  }
+
+  content: '';
+  display: inline-block;
+  height: 0;
+  width: 0;
+  vertical-align: middle;
+}
+
+@mixin border-button($color) {
+  &.active,
+  &:active,
+  &:active:focus,
+  &:focus,
+  &:hover {
+    border-color: $color;
+  }
+}

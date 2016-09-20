@@ -1,0 +1,60 @@
+{
+  "select": {
+    "Standard Ores": {
+      "veldspar": "Veldspar",
+      "scordite": "Scordite",
+      "pyroxeres": "Pyroxeres",
+      "plagioclase": "Plagioclase",
+      "omber": "Omber",
+      "kernite": "Kernite",
+      "jaspet": "Jaspet",
+      "hemorphite": "Hemorphite",
+      "hedbergite": "Hedbergite",
+      "gneiss": "Gneiss",
+      "dark ochre": "Dark Ochre",
+      "spodumain": "Spodumain",
+      "crokite": "Crokite",
+      "bistot": "Bistot",
+      "arkonor": "Arkonor",
+      "mercoxit": "Mercoxit"
+    },
+    "Mission Ores": {
+      "banidine": "Banidine ",
+      "lyavite": "Lyavite",
+      "augumene": "Augumene",
+      "mercium": "Mercium",
+      "pithix": "Pithix",
+      "green arisite": "Green Arisite",
+      "oeryl": "Oeryl",
+      "geodite": "Geodite",
+      "polygypsum": "Polygypsum"
+    }
+  },
+  "size": {
+    "veldspar": 0.1,
+    "scordite": 0.15,
+    "pyroxeres": 0.3,
+    "plagioclase": 0.35,
+    "omber": 0.6,
+    "kernite": 1.2,
+    "jaspet": 2,
+    "hemorphite": 3,
+    "hedbergite": 3,
+    "gneiss": 5,
+    "dark ochre": 8,
+    "spodumain": 16,
+    "crokite": 16,
+    "bistot": 16,
+    "arkonor": 16,
+    "mercoxit": 40,
+    "banidine": 0.1,
+    "lyavite": 1.2,
+    "augumene": 0.3,
+    "mercium": 0.6,
+    "pithix": 2,
+    "green arisite": 5,
+    "oeryl": 8,
+    "geodite": 16,
+    "polygypsum": 16
+  }
+}

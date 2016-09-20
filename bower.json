@@ -1,0 +1,18 @@
+{
+  "name": "eve-mining-timer",
+  "description": "Mining Timer for EVE Online",
+  "version": "0.0.1",
+  "keywords": [
+    "eve online"
+  ],
+  "devDependencies": {
+    "jquery": "1.*",
+    "bootstrap-sass": "3.*",
+    "font-awesome": "4.*",
+    "vue": "1.*",
+    "css-margin-padding": "https://github.com/wuifdesign/css-margin-padding.git"
+  },
+  "ignore": [
+    "*.md"
+  ]
+}

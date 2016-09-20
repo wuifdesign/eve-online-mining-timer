@@ -1,0 +1,25 @@
+//https://color.adobe.com/de/Citrus-color-theme-10986/
+
+$font-family-sans-serif: 'Lato', sans-serif;
+
+$border-radius-base: 0;
+$border-radius-large: 0;
+$border-radius-small: 0;
+
+$colored-bg: #ff6702;
+
+$body-bg: #1d1f20;
+$text-color: #cfd2da;
+
+$light-body-bg: lighten($body-bg, 5%);
+$dark-body-bg: darken($body-bg, 5%);
+
+$panel-bg: $dark-body-bg;
+$brand-dark:    #444444 !default;
+
+$panel-default-text: $text-color;
+$panel-default-border: $dark-body-bg;
+$panel-default-heading-bg: $light-body-bg;
+
+$icon-font-path: "../fonts/bootstrap-sass/assets/fonts/bootstrap/" !default;
+$fa-font-path: "../fonts/font-awesome/fonts" !default;
