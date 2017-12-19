@@ -20,12 +20,15 @@
                 var scanElement = {};
                 var elementPart = element.split('\t');
 
-                if (elementPart.length != 3) {
-                    throw 'shorter 3';
+                console.log(elementPart);
+
+                if (elementPart.length != 4) {
+                    console.log('length not 4');
+                    throw 'shorter 4';
                 }
 
-                scanElement.label = elementPart[0] + ' - ' + elementPart[2];
-                scanElement.count = parseInt(elementPart[1].replace(/\u00a0/g, '').replace('.', '').replace(',', ''));
+                scanElement.label = elementPart[0] + ' - ' + elementPart[3];
+                scanElement.count = parseInt(elementPart[1].replace(/\u00a0/g, '').replace(' ', '').replace('.', '').replace(',', ''));
 
                 var type = elementPart[0].split(' ');
                 var ore;

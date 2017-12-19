@@ -1,2 +1,7 @@
 Veldspar	4.002	123 km
 Condensed Scordite	13.405	6.420 m
+
+Solid Pyroxeres	20 834	6 250 m3	4 801 m
+Solid Pyroxeres	22 478	6 743 m3	6 431 m
+Solid Pyroxeres	24 325	7 297 m3	13 km
+Solid Pyroxeres	3 230	969 m3	15 km
