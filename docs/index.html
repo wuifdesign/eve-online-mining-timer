@@ -99,7 +99,7 @@
                     <th style="width: 10%;">Ore Count</th>
                     <th style="width: 10%;" class="hidden-xs">Ore Size</th>
                     <th style="width: 65px;">Turrets</th>
-                    <th style="width: 10%;" class="hidden-xs">Circles</th>
+                    <th style="width: 10%;" class="hidden-xs">Cycles</th>
                     <th style="width: 10%;">Time</th>
                     <th style="width: 95px;"></th>
                 </tr>
@@ -162,7 +162,7 @@
                                 <th>Name</th>
                                 <th style="width: 15%;">Cargo Size (m<sup>3</sup>)</th>
                                 <th style="width: 19%;">Yield per Turret (m<sup>3</sup>)</th>
-                                <th style="width: 19%;">Turret Circle Time (sec)</th>
+                                <th style="width: 19%;">Turret Cycle Time (sec)</th>
                                 <th style="width: 8%;">Turrets</th>
                                 <th style="width: 11%;">Split Turrets</th>
                                 <th style="width: 54px;">&nbsp;</th>
@@ -173,7 +173,7 @@
                                 <td><input type="text" v-model="ship.name" v-on:change="saveShips" class="form-control input-sm" placeholder="Ship Name" v-bind:class="{error: ship.name === ''}"></th>
                                 <td><input type="text" v-model="ship.cargo" v-on:change="saveShips" class="form-control input-sm" placeholder="Cargo Size" v-bind:class="{error: ship.cargo === 0}"></td>
                                 <td><input type="text" v-model="ship.yield_per_turret" v-on:change="saveShips" class="form-control input-sm" placeholder="Yield per Turret" v-bind:class="{error: ship.yield_per_turret === 0}"></td>
-                                <td><input type="text" v-model="ship.circle_time" v-on:change="saveShips" class="form-control input-sm" placeholder="Turret Circle Time" v-bind:class="{error: ship.circle_time === 0}"></td>
+                                <td><input type="text" v-model="ship.circle_time" v-on:change="saveShips" class="form-control input-sm" placeholder="Turret Cycle Time" v-bind:class="{error: ship.circle_time === 0}"></td>
                                 <td>
                                     <select class="form-control input-sm" v-model="ship.turrets" v-on:change="saveShips">
                                         <option v-bind:value="1">1</option>
