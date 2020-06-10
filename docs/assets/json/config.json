@@ -28,6 +28,16 @@
       "oeryl": "Oeryl",
       "geodite": "Geodite",
       "polygypsum": "Polygypsum"
+    },
+    "Ice": {
+      "clear icicle": "Clear Icicle",
+      "white glaze": "White Glaze",
+      "blue ice": "Blue Ice",
+      "glacial mass": "Glacial Mass",
+      "glare crust": "Glare Crust",
+      "dark glitter": "Dark Glitter",
+      "gelidus": "Gelidus",
+      "krystallos": "Krystallos"
     }
   },
   "size": {
@@ -55,6 +65,14 @@
     "green arisite": 5,
     "oeryl": 8,
     "geodite": 16,
-    "polygypsum": 16
+    "polygypsum": 16,
+    "clear icicle": 1000,
+    "white glaze": 1000,
+    "blue ice": 1000,
+    "glacial mass": 1000,
+    "glare crust": 1000,
+    "dark glitter": 1000,
+    "gelidus": 1000,
+    "krystallos": 1000
   }
 }
