@@ -39,10 +39,31 @@
                     ore = type[0].toLowerCase();
                 }
 
-                if (ore === 'ochre') {
-                    ore = 'dark ochre';
-                } else if (ore === 'arisite') {
-                    ore = 'green arisite';
+                switch(ore) {
+                    case 'ochre':
+                        ore = 'dark ochre';
+                        break;
+                    case 'arisite':
+                        ore = 'green arisite';
+                        break;
+                    case 'icicle':
+                        ore = 'clear icicle';
+                        break;
+                    case 'glaze':
+                        ore = "white glaze";
+                        break;
+                    case 'ice':
+                        ore = "blue ice";
+                        break;
+                    case 'mass':
+                        ore = "glacial mass";
+                        break;
+                    case 'crust':
+                        ore = "glare crust";
+                        break;
+                    case 'glitter':
+                        ore = "dark glitter";
+                        break;
                 }
 
                 scanElement.ore = ore;
