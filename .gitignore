@@ -3,3 +3,4 @@
 /.sass-cache
 /node_modules
 /resources/assets/components
+package-lock.json

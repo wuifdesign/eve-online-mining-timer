@@ -17,5 +17,8 @@
   },
   "scripts": {
     "postinstall": "bower install"
+  },
+  "dependencies": {
+    "bower": "^1.8.8"
   }
 }
