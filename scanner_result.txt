@@ -5,3 +5,8 @@ Solid Pyroxeres	20 834	6 250 m3	4 801 m
 Solid Pyroxeres	22 478	6 743 m3	6 431 m
 Solid Pyroxeres	24 325	7 297 m3	13 km
 Solid Pyroxeres	3 230	969 m3	15 km
+
+Coesite	3,664	36,640 m3	9,445 m
+Coesite	3,664	36,640 m3	27 km
+Brimful Bitumens	1,685	16,850 m3	5,929 m
+Bitumens	3,664	36,640 m3	9,445 m

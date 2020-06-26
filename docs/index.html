@@ -1,246 +1,288 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Eve Online - Mining Timer</title>
-    <meta name="description" content="Keep track of your mining lasers and strip miners to optimize your yield. Never run empty mining circles again.">
+  <title>Eve Online - Mining Timer</title>
+  <meta name="description" content="Keep track of your mining lasers and strip miners to optimize your yield. Never run empty mining circles again.">
 
-    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
 
-    <style type="text/css">
-        body {
-            font-family: Verdana, Geneva, sans-serif;
-        }
-    </style>
+  <style type="text/css">
+    body {
+      font-family: Verdana, Geneva, sans-serif;
+    }
+  </style>
 
-    <link rel="stylesheet" href="./assets/css/main.min.css" type="text/css">
+  <link rel="stylesheet" href="./assets/css/main.min.css" type="text/css">
 </head>
 <body>
 
-    <div class="header">Eve Online - Mining Timer</div>
+<div class="header">Eve Online - Mining Timer</div>
 
-    <div id="mining-app" v-cloak>
-        <div class="container">
+<div id="mining-app" v-cloak>
 
-            <div class="panel panel-default m-t-b with-border" v-bind:class="{warning: cargo_nearly_full, danger: cargo_full}">
-                <div class="panel-body text-center">
-                    <div class="text-lg">
-                        Current Cargo Used: <strong>{{ cargo | toFixed }} m<sup>3</sup> <span class="max-cargo">/ {{ max_cargo | number }} m<sup>3</sup></span></strong>
-                    </div>
-                    <div>
-                        <a href="#" v-on:click.prevent="resetCargo">Reset Cargo (i.e.: after removing cargo at station)</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="alert alert-danger text-center" v-if="this.ship_count === 0">
-                <i class="fa fa-fw fa-warning"></i>
-                <b>No Ship found!</b> Start by <a href="#ships-modal" data-toggle="modal">adding a new Ship</a>.
-            </div>
-
-            <div class="row m-b-xs">
-                <div class="col-xs-6 col-sm-3 col-sm-offset-5">
-                    <button class="btn btn-primary btn-border btn-sm btn-block" data-toggle="modal" data-target="#ships-modal"><i class="fa fa-fw fa-paper-plane"></i> Manave My Ships</button>
-                </div>
-                <div class="col-xs-6 col-sm-4">
-                    <select class="form-control input-sm" v-model="current_ship_index" v-bind:class="{error: current_ship_index === null}">
-                        <option v-if="this.ship_count === 0" v-bind:value="">No Ship found!</option>
-                        <option v-for="ship in ships" v-if="ship.name !== ''" v-bind:value="$index">{{ ship.name }}</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="text-right m-b text-sm">
-                Yield/sec: {{ yield_per_sec_m3 | toFixed }} m³ | Time for full Cargo: {{ full_cargo_time | time }}
-            </div>
-
-            <script type="text/x-template" id="grid-template">
-                <tr >
-                    <td>
-                        <input type="text" v-model="data.label" class="form-control text-center input-sm" />
-                    </td>
-                    <td>
-                        <select class="form-control input-sm" v-model="data.ore" v-bind:class="{error: data.ore === ''}">
-                            <optgroup v-for="(group_name, data) in select" label="{{ group_name }}">
-                                <option v-for="(ore_key, ore_name) in data" v-bind:value="ore_key">{{ ore_name }}</option>
-                            </optgroup>
-                        </select>
-                    </td>
-                    <td>
-                        <input type="number" v-model="data.count | round" class="form-control text-center input-sm" v-bind:class="{error: data.count === 0}" />
-                    </td>
-                    <td class="hidden-xs">{{ total_ore_size | number }}&nbsp;m<sup>3</sup></td>
-                    <td>
-                        <select class="form-control input-sm" v-model="turrets">
-                            <option v-for="value in turrets_select" v-bind:value="value">{{ value }}</option>
-                        </select>
-                    </td>
-                    <td class="hidden-xs">{{ circles | toFixed }}</td>
-                    <td class="text-bold text-lg">{{ time | time }}</td>
-                    <td style="text-align: right;">
-                        <button class="btn btn-sm btn-success btn-border" v-on:click="start" v-show="!running">
-                            <i class="fa fa-check fa-fw" v-if="data.count == 0"></i>
-                            <i class="fa fa-play fa-fw" v-else></i>
-                        </button>
-                        <button class="btn btn-sm btn-warning btn-border" v-on:click="stop" v-show="running"><i class="fa fa-pause fa-fw"></i></button>
-                        <button class="btn btn-sm btn-danger btn-border" v-on:click="remove"><i class="fa fa-times fa-fw"></i></button>
-                    </td>
-                </tr>
-            </script>
-
-            <table class="table custom-table">
-                <thead>
-                <tr>
-                    <th>Label</th>
-                    <th style="width: 15%;">Ore</th>
-                    <th style="width: 10%;">Ore Count</th>
-                    <th style="width: 10%;" class="hidden-xs">Ore Size</th>
-                    <th style="width: 65px;">Turrets</th>
-                    <th style="width: 10%;" class="hidden-xs">Circles</th>
-                    <th style="width: 10%;">Time</th>
-                    <th style="width: 95px;"></th>
-                </tr>
-                </thead>
-                <tbody>
-                    <tr class="task-row" is="task-row" v-for="task in tasks" :data="task" :add-cargo="addCargo" :current_ship="current_ship" :yield_per_sec_m3="yield_per_sec_m3" :remove-task="removeTask" :settings="settings"></tr>
-                </tbody>
-            </table>
-
-            <div class="row">
-                <div class="col-sm-6 m-xs-b-sm">
-                    <button class="btn btn-primary btn-border" data-toggle="modal" data-target="#settings-modal"><i class="fa fa-fw fa-cogs"></i> Edit Settings</button>
-                </div>
-                <div class="col-sm-6 text-right">
-                    <button class="btn btn-success btn-border" v-on:click="addEmptyTask"><i class="fa fa-fw fa-plus"></i> Add Row</button>
-                    <button class="btn btn-danger btn-border" v-on:click="removeEmptyTasks"><i class="fa fa-fw fa-trash"></i> Delete empty/finished Rows</button>
-                </div>
-            </div>
-
-            <div class="row text-center m-t">
-                <div class="col-sm-6 col-sm-offset-3">
-                    <h4>Paste Survey Scanner Result</h4>
-                    <textarea class="form-control no-resize" v-model="scanner_data" v-on:paste="parseScannerData"></textarea>
-                </div>
-            </div>
-
-            <hr />
-
-            <div class="text-center">
-                <h3 style="color:#fff;">How to Use</h3>
-                You can add empty rows by clicking "Add Row", or use the survey scanner result to create prefilled rows.<br/>
-                Use <b>CTRL + C</b> on the selected survey scanner result and use <b>CTRL + V</b> on the textarea above.
-            </div>
-
-            <hr/>
-
-            <div class="text-center">
-                Created by <a href="https://gate.eveonline.com/Profile/Marumis%20Wuif" target="_blank">Marumis Wuif</a><br/>
-                Feel free to send me questions, suggestions or donations of ISK.
-            </div>
-
-            <div class="text-center m-t">
-                <a href="https://github.com/wuifdesign/eve-online-mining-timer" target="_blank">Github</a> |
-                <a href="https://github.com/wuifdesign/eve-online-mining-timer/issues" target="_blank">Issues</a>
-            </div>
-
+  <div class="container">
+    <div class="panel panel-default m-t-b with-border" v-bind:class="{warning: cargo_nearly_full, danger: cargo_full}">
+      <div class="panel-body text-center">
+        <div class="text-lg">
+          Current Cargo Used: <strong>{{ cargo | toFixed }} m<sup>3</sup> <span class="max-cargo">/ {{ max_cargo | number }} m<sup>3</sup></span></strong>
         </div>
-
-        <div class="modal fade" id="ships-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title"><i class="fa fa-fw fa-paper-plane"></i> My Ships</h4>
-                    </div>
-                    <div class="modal-body">
-                        <table class="table table-striped">
-                            <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th style="width: 15%;">Cargo Size (m<sup>3</sup>)</th>
-                                <th style="width: 19%;">Yield per Turret (m<sup>3</sup>)</th>
-                                <th style="width: 19%;">Turret Circle Time (sec)</th>
-                                <th style="width: 8%;">Turrets</th>
-                                <th style="width: 11%;">Split Turrets</th>
-                                <th style="width: 54px;">&nbsp;</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr v-for="ship in ships">
-                                <td><input type="text" v-model="ship.name" v-on:change="saveShips" class="form-control input-sm" placeholder="Ship Name" v-bind:class="{error: ship.name === ''}"></th>
-                                <td><input type="text" v-model="ship.cargo" v-on:change="saveShips" class="form-control input-sm" placeholder="Cargo Size" v-bind:class="{error: ship.cargo === 0}"></td>
-                                <td><input type="text" v-model="ship.yield_per_turret" v-on:change="saveShips" class="form-control input-sm" placeholder="Yield per Turret" v-bind:class="{error: ship.yield_per_turret === 0}"></td>
-                                <td><input type="text" v-model="ship.circle_time" v-on:change="saveShips" class="form-control input-sm" placeholder="Turret Circle Time" v-bind:class="{error: ship.circle_time === 0}"></td>
-                                <td>
-                                    <select class="form-control input-sm" v-model="ship.turrets" v-on:change="saveShips">
-                                        <option v-bind:value="1">1</option>
-                                        <option v-bind:value="2">2</option>
-                                        <option v-bind:value="3">3</option>
-                                        <option v-bind:value="4">4</option>
-                                        <option v-bind:value="5">5</option>
-                                        <option v-bind:value="6">6</option>
-                                        <option v-bind:value="7">7</option>
-                                        <option v-bind:value="8">8</option>
-                                    </select>
-                                </td>
-                                <td class="text-center"><input type="checkbox" v-model="ship.split_turrets" v-on:change="saveShips" style="margin-top: 8px;" /></td>
-                                <td><button class="btn btn-sm btn-danger" v-on:click="removeShip(ship)"><i class="fa fa-fw fa-times"></i></button></td>
-                            </tr>
-                            </tbody>
-                        </table>
-                        <div class="text-right">
-                            <button class="btn btn-success btn-sm" v-on:click="addEmptyShip"><i class="fa fa-fw fa-plus"></i> Add Ship</button>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
+        <div>
+          <a href="#" v-on:click.prevent="resetCargo">Reset Cargo (i.e.: after removing cargo at station)</a>
         </div>
-
-        <div class="modal fade" id="settings-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="myModalLabel"><i class="fa fa-fw fa-cogs"></i> Settings</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="warning-limit">Waring Cargo Limit in %</label>
-                            <input type="text" v-model="settings.cargo_limit" v-on:change="saveSettings" class="form-control" id="warning-limit" placeholder="Waring Cargo Limit">
-                        </div>
-                        <b>Task finished Sound</b>
-                        <div class="radio" v-for="(key, value) in sounds">
-                            <label>
-                                <input type="radio" v-bind:value="key" v-on:change="saveSettings" v-model="settings.task_sound">{{ value }}
-                                <a href="#" v-on:click.prevent="playSound(key)"><i class="fa fa-play-circle-o"></i></a>
-                            </label>
-                        </div>
-                        <b>Cargo Full Sound</b>
-                        <div class="radio" v-for="(key, value) in sounds">
-                            <label>
-                                <input type="radio" v-bind:value="key" v-on:change="saveSettings" v-model="settings.cargo_full_sound">{{ value }}
-                                <a href="#" v-on:click.prevent="playSound(key)"><i class="fa fa-play-circle-o"></i></a>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="app-audio-holder"></div>
+      </div>
     </div>
 
-    <script src="./assets/js/vendor.min.js" type="text/javascript"></script>
-    <script src="./assets/js/main.min.js" type="text/javascript"></script>
+    <div class="alert alert-danger text-center" v-if="this.ship_count === 0">
+      <i class="fa fa-fw fa-warning"></i>
+      <b>No Ship found!</b> Start by <a href="#ships-modal" data-toggle="modal">adding a new Ship</a>.
+    </div>
+
+    <div class="row m-b-xs">
+      <div class="col-xs-6 col-sm-3 col-sm-offset-5">
+        <button class="btn btn-primary btn-border btn-sm btn-block" data-toggle="modal" data-target="#ships-modal">
+          <i class="fa fa-fw fa-paper-plane"></i> Manave My Ships
+        </button>
+      </div>
+      <div class="col-xs-6 col-sm-4">
+        <select class="form-control input-sm" v-model="current_ship_index" v-bind:class="{error: current_ship_index === null}">
+          <option v-if="this.ship_count === 0" value="">No Ship found!</option>
+          <option v-for="ship in validShips" v-bind:value="$index">{{ ship.name }}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="text-right m-b text-sm">
+      Yield/sec: {{ yield_per_sec_m3 | toFixed }} m³ | Time for full Cargo: {{ full_cargo_time | time }}
+    </div>
+
+    <script type="text/x-template" id="grid-template">
+      <tr>
+        <td>
+          <input type="text" v-model="data.label" class="form-control text-center input-sm"/>
+        </td>
+        <td>
+          <select class="form-control input-sm" v-model="data.ore" v-bind:class="{error: data.ore === ''}">
+            <optgroup v-for="(group_name, data) in select" label="{{ group_name }}">
+              <option v-for="(ore_key, ore_name) in data" v-bind:value="ore_key">{{ ore_name }}</option>
+            </optgroup>
+          </select>
+        </td>
+        <td>
+          <input type="number" v-model="data.count | round" class="form-control text-center input-sm" v-bind:class="{error: data.count === 0}"/>
+        </td>
+        <td class="hidden-xs">{{ total_ore_size | number }}&nbsp;m<sup>3</sup></td>
+        <td>
+          <select class="form-control input-sm" v-model="turrets">
+            <option v-for="value in turrets_select" v-bind:value="value">{{ value }}</option>
+          </select>
+        </td>
+        <td class="hidden-xs">{{ circles | toFixed }}</td>
+        <td class="text-bold text-lg">{{ time | time }}</td>
+        <td style="text-align: right;">
+          <button class="btn btn-sm btn-success btn-border" v-on:click="start" v-show="!running">
+            <i class="fa fa-check fa-fw" v-if="data.count === 0"></i>
+            <i class="fa fa-play fa-fw" v-else></i>
+          </button>
+          <button class="btn btn-sm btn-warning btn-border" v-on:click="stop" v-show="running">
+            <i class="fa fa-pause fa-fw"></i>
+          </button>
+          <button class="btn btn-sm btn-danger btn-border" v-on:click="remove">
+            <i class="fa fa-times fa-fw"></i>
+          </button>
+        </td>
+      </tr>
+    </script>
+
+    <table class="table custom-table">
+      <thead>
+      <tr>
+        <th>Label</th>
+        <th style="width: 15%;">Ore</th>
+        <th style="width: 10%;">Ore Count</th>
+        <th style="width: 10%;" class="hidden-xs">Ore Size</th>
+        <th style="width: 65px;">Turrets</th>
+        <th style="width: 10%;" class="hidden-xs">Circles</th>
+        <th style="width: 10%;">Time</th>
+        <th style="width: 95px;"></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="task-row"
+          is="task-row"
+          v-for="task in tasks"
+          :data="task"
+          :add-cargo="addCargo"
+          :current_ship="current_ship"
+          :yield_per_sec_m3="yield_per_sec_m3"
+          :remove-task="removeTask"
+          :settings="settings"
+      >
+      </tr>
+      </tbody>
+    </table>
+
+    <div class="row">
+      <div class="col-sm-6 m-xs-b-sm">
+        <button class="btn btn-primary btn-border" data-toggle="modal" data-target="#settings-modal">
+          <i class="fa fa-fw fa-cogs"></i> Edit Settings
+        </button>
+      </div>
+      <div class="col-sm-6 text-right">
+        <button class="btn btn-success btn-border" v-on:click="addEmptyTask">
+          <i class="fa fa-fw fa-plus"></i> Add Row
+        </button>
+        <button class="btn btn-danger btn-border" v-on:click="removeEmptyTasks">
+          <i class="fa fa-fw fa-trash"></i> Delete empty/finished Rows
+        </button>
+      </div>
+    </div>
+
+    <div class="row text-center m-t">
+      <div class="col-sm-6 col-sm-offset-3">
+        <h4>Paste Survey Scanner Result</h4>
+        <textarea class="form-control no-resize" v-model="scanner_data" v-on:paste="parseScannerData"></textarea>
+      </div>
+    </div>
+
+    <hr/>
+
+    <div class="text-center">
+      <h3 style="color:#fff;">How to Use</h3>
+      You can add empty rows by clicking "Add Row", or use the survey scanner result to create prefilled rows.<br/>
+      Use <b>CTRL + C</b> on the selected survey scanner result and use <b>CTRL + V</b> on the textarea above.
+    </div>
+
+    <hr/>
+
+    <div class="text-center">
+      Created by <a href="https://gate.eveonline.com/Profile/Marumis%20Wuif" target="_blank">Marumis Wuif</a><br/>
+      Feel free to send me questions, suggestions or donations of ISK.
+    </div>
+
+    <div class="text-center m-t">
+      <a href="https://github.com/wuifdesign/eve-online-mining-timer" target="_blank">Github</a> |
+      <a href="https://github.com/wuifdesign/eve-online-mining-timer/issues" target="_blank">Issues</a>
+    </div>
+  </div>
+
+  <div class="modal fade" id="ships-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title"><i class="fa fa-fw fa-paper-plane"></i> My Ships</h4>
+        </div>
+        <div class="modal-body">
+          <table class="table table-striped">
+            <thead>
+            <tr>
+              <th>Name</th>
+              <th style="width: 15%;">Cargo Size (m<sup>3</sup>)</th>
+              <th style="width: 19%;">Yield per Turret (m<sup>3</sup>)</th>
+              <th style="width: 19%;">Turret Circle Time (sec)</th>
+              <th style="width: 8%;">Turrets</th>
+              <th style="width: 11%;">Split Turrets</th>
+              <th style="width: 54px;">&nbsp;</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="ship in ships">
+              <th>
+                <input type="text" v-model="ship.name" v-on:change="saveShips" class="form-control input-sm" placeholder="Ship Name" v-bind:class="{error: ship.name === ''}">
+              </th>
+              <td>
+                <input type="text" v-model="ship.cargo" v-on:change="saveShips" class="form-control input-sm" placeholder="Cargo Size" v-bind:class="{error: ship.cargo === 0}">
+              </td>
+              <td>
+                <input type="text" v-model="ship.yield_per_turret" v-on:change="saveShips" class="form-control input-sm" placeholder="Yield per Turret" v-bind:class="{error: ship.yield_per_turret === 0}">
+              </td>
+              <td>
+                <input type="text" v-model="ship.circle_time" v-on:change="saveShips" class="form-control input-sm" placeholder="Turret Circle Time" v-bind:class="{error: ship.circle_time === 0}">
+              </td>
+              <td>
+                <select class="form-control input-sm" v-model="ship.turrets" v-on:change="saveShips">
+                  <option v-bind:value="1">1</option>
+                  <option v-bind:value="2">2</option>
+                  <option v-bind:value="3">3</option>
+                  <option v-bind:value="4">4</option>
+                  <option v-bind:value="5">5</option>
+                  <option v-bind:value="6">6</option>
+                  <option v-bind:value="7">7</option>
+                  <option v-bind:value="8">8</option>
+                </select>
+              </td>
+              <td class="text-center">
+                <input type="checkbox" v-model="ship.split_turrets" v-on:change="saveShips" style="margin-top: 8px;"/>
+              </td>
+              <td>
+                <button class="btn btn-sm btn-danger" v-on:click="removeShip(ship)">
+                  <i class="fa fa-fw fa-times"></i>
+                </button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          <div class="text-right">
+            <button class="btn btn-success btn-sm" v-on:click="addEmptyShip">
+              <i class="fa fa-fw fa-plus"></i> Add Ship
+            </button>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="settings-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="myModalLabel">
+            <i class="fa fa-fw fa-cogs"></i> Settings
+          </h4>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="warning-limit">Waring Cargo Limit in %</label>
+            <input type="text" v-model="settings.cargo_limit" v-on:change="saveSettings" class="form-control" id="warning-limit" placeholder="Waring Cargo Limit">
+          </div>
+          <b>Task finished Sound</b>
+          <div class="radio" v-for="(key, value) in sounds">
+            <label>
+              <input type="radio" v-bind:value="key" v-on:change="saveSettings" v-model="settings.task_sound">
+              {{ value }} <a href="#" v-on:click.prevent="playSound(key)"><i class="fa fa-play-circle-o"></i></a>
+            </label>
+          </div>
+          <b>Cargo Full Sound</b>
+          <div class="radio" v-for="(key, value) in sounds">
+            <label>
+              <input type="radio" v-bind:value="key" v-on:change="saveSettings" v-model="settings.cargo_full_sound">
+              {{ value }}
+              <a href="#" v-on:click.prevent="playSound(key)"><i class="fa fa-play-circle-o"></i></a>
+            </label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="app-audio-holder"></div>
+</div>
+
+<script src="./assets/js/vendor.min.js" type="text/javascript"></script>
+<script src="./assets/js/main.min.js" type="text/javascript"></script>
 
 </body>
 </html>

@@ -1,9 +1,9 @@
 @import "variables";
 
-@import "../components/bootstrap-sass/assets/stylesheets/bootstrap";
+@import "../node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
 
-@import "../components/css-margin-padding/src/sass/main";
-@import "../components/font-awesome/scss/font-awesome";
+@import "../node_modules/css-margin-padding/src/sass/main";
+@import "../node_modules/font-awesome/scss/font-awesome";
 
 @import "custom/mixins";
 @import "custom/colors";
