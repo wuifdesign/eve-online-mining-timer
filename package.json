@@ -17,7 +17,7 @@
     "gulp-uglify": "^3.0.2",
     "gulp-util": "^3.0.8",
     "gulp.spritesmith": "^6.11.0",
-    "jquery": "^1.12.4",
+    "jquery": "^3.5.0",
     "live-server": "^1.2.1",
     "vue": "^1.0.28"
   },
