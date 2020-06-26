@@ -38,6 +38,36 @@
       "dark glitter": "Dark Glitter",
       "gelidus": "Gelidus",
       "krystallos": "Krystallos"
+    },
+    "Ubiquitous Moon Ore (R4)": {
+      "bitumens": "Bitumens",
+      "coesite": "Coesite",
+      "sylvite": "Sylvite",
+      "zeolites": "Zeolites"
+    },
+    "Common Moon Ore (R8)": {
+      "cobaltite": "Cobaltite",
+      "euxenite": "Euxenite",
+      "scheelite": "Scheelite",
+      "titanite": "Titanite"
+    },
+    "Uncommon Moon Ore (R16)": {
+      "chromite": "Chromite",
+      "otavite": "Otavite",
+      "sperrylite": "Sperrylite",
+      "vanadinite": "Vanadinite"
+    },
+    "Rare Moon Ore (R32)": {
+      "carnotite": "Carnotite",
+      "cinnabar": "Cinnabar",
+      "pollucite": "Pollucite",
+      "zircon": "Zircon"
+    },
+    "Exceptional Moon Ore (R64)": {
+      "loparite": "Loparite",
+      "monazite": "Monazite",
+      "xenotime": "Xenotime",
+      "ytterbite": "Ytterbite"
     }
   },
   "size": {
@@ -73,6 +103,26 @@
     "glare crust": 1000,
     "dark glitter": 1000,
     "gelidus": 1000,
-    "krystallos": 1000
+    "krystallos": 1000,
+    "bitumens": 10,
+    "coesite": 10,
+    "sylvite": 10,
+    "zeolites": 10,
+    "cobaltite": 10,
+    "euxenite": 10,
+    "scheelite": 10,
+    "titanite": 10,
+    "chromite": 10,
+    "otavite": 10,
+    "sperrylite": 10,
+    "vanadinite": 10,
+    "carnotite": 10,
+    "cinnabar": 10,
+    "pollucite": 10,
+    "zircon": 10,
+    "loparite": 10,
+    "monazite": 10,
+    "xenotime": 10,
+    "ytterbite": 10
   }
 }
