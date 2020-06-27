@@ -1,24 +1,32 @@
 {
   "private": true,
   "devDependencies": {
-    "gulp": "^3.9.1",
-    "gulp-buffer": "0.0.2",
-    "gulp-clean-css": "^2.0.3",
-    "gulp-concat": "^2.6.0",
-    "gulp-cssimport": "^3.0.2",
-    "gulp-imagemin": "^3.0.1",
-    "gulp-load-plugins": "^1.2.0",
-    "gulp-rename": "^1.2.2",
-    "gulp-sass": "^2.2.0",
-    "gulp-sourcemaps": "^1.6.0",
-    "gulp-uglify": "^1.5.3",
-    "gulp-util": "^3.0.7",
-    "gulp.spritesmith": "^6.2.1"
+    "bootstrap-sass": "^3.4.1",
+    "css-margin-padding": "https://github.com/wuifdesign/css-margin-padding.git",
+    "font-awesome": "^4.7.0",
+    "gulp": "^4.0.2",
+    "gulp-buffer": "^0.0.2",
+    "gulp-clean-css": "^4.3.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-cssimport": "^7.0.0",
+    "gulp-imagemin": "^7.1.0",
+    "gulp-load-plugins": "^2.0.3",
+    "gulp-rename": "^2.0.0",
+    "gulp-sass": "^4.1.0",
+    "gulp-sourcemaps": "^2.6.5",
+    "gulp-uglify": "^3.0.2",
+    "gulp-util": "^3.0.8",
+    "gulp.spritesmith": "^6.11.0",
+    "jquery": "^3.5.1",
+    "live-server": "^1.2.1",
+    "vue": "^1.0.28"
   },
   "scripts": {
-    "postinstall": "bower install"
-  },
-  "dependencies": {
-    "bower": "^1.8.8"
+    "dev-server": "cd ./docs && live-server",
+    "gulp-copy-files": "gulp copy-files",
+    "gulp-sass": "gulp sass",
+    "gulp-js": "gulp js",
+    "gulp-js-vendor": "gulp js-vendor",
+    "gulp-watch": "gulp watch"
   }
 }
