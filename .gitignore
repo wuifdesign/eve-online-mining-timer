@@ -2,5 +2,4 @@
 .DS_Store
 /.sass-cache
 /node_modules
-/resources/assets/components
-package-lock.json
+/resources/assets/node_modules

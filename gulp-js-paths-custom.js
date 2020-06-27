@@ -1,3 +1,3 @@
 module.exports = [
-    'js/timer.js'
+  'js/timer.js',
 ];

@@ -1,5 +1,5 @@
 module.exports = [
-    'components/jquery/dist/jquery.js',
-    'components/bootstrap-sass/assets/javascripts/bootstrap.js',
-    'components/vue/dist/vue.js'
+  'node_modules/jquery/dist/jquery.js',
+  'node_modules/bootstrap-sass/assets/javascripts/bootstrap.js',
+  'node_modules/vue/dist/vue.js',
 ];
