@@ -152,41 +152,6 @@
 
     <hr/>
 
-    <div class="row text-center m-t">
-      <div class="col-sm-12">
-        <!-- <button class="btn btn-primary btn-border btn-sm btn-block" data-toggle="modal" data-target="#ships-modal">
-          <i class="fa fa-fw fa-paper-plane"></i> Manave My Ships
-        </button> -->
-        <h4>Mining Summary</h4>
-        &nbsp
-        <table class="table custom-table">
-          <thead>
-            <tr>
-              <th style="width: 15%;">Ore</th>
-              <th style="width: 20%;">Count</th>
-              <th style="width: 20%;">Volume</th>
-            </tr>
-          </thead>
-          <!-- <tbody v-for="(oreType, oreVariants) in ores"> -->
-            <tbody v-for="oreType in oreTypeCheck(ores)">
-            <tr>
-              <td style="border-bottom: 2px solid white!important;">{{ summaryType(oreType) }}</td>
-              <td style="border-bottom: 2px solid white!important;">Veldspar SummaryCount</td>
-              <td style="border-bottom: 2px solid white!important;">Veldspar SummaryVolume</td>
-            </tr>
-            <!-- <tr v-for="(oreVariant, variantData) in ores[oreType]"> -->
-            <tr v-for="oreVariant in oreVariantCheck(oreType)">
-              <td style="text-align: right;">{{ oreVariant }}</td>
-              <td>{{ variantCount(oreType, oreVariant) | round }}</td>
-              <td>{{ variantVolume(oreType, oreVariant) }}&nbsp;m<sup>3</sup></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <hr/>
-
     <div class="text-center">
       <h3 style="color:#fff;">How to Use</h3>
       You can add empty rows by clicking "Add Row", or use the survey scanner result to create prefilled rows.<br/>
@@ -194,6 +159,40 @@
     </div>
 
     <hr/>
+
+    <div class="row text-center m-t">
+        <div class="col-sm-12">
+          <h4 class="col-sm-6 col-sm-offset-3">Mining Summary</h4>
+          <div class="col-sm-3 text-right">
+            <button class="btn btn-danger btn-border" v-on:click="clearSummary">
+              <i class="fa fa-fw fa-trash"></i> Clear Summary
+            </button>
+          </div>
+          <table class="table custom-table">
+            <thead>
+              <tr>
+                <th style="width: 20%;">Ore</th>
+                <th style="width: 20%;">Count</th>
+                <th style="width: 20%;">Volume</th>
+              </tr>
+            </thead>
+            <!-- <tbody v-for="(oreType, oreVariants) in ores"> -->
+              <tbody v-for="oreType in oreTypeCheck(ores)">
+              <tr>
+                <td style="border-bottom: 2px solid white!important;">{{ summaryType(oreType) }}</td>
+                <td style="border-bottom: 2px solid white!important;">{{ summaryCount(oreType) | round }}</td>
+                <td style="border-bottom: 2px solid white!important;">{{ summaryVolume(oreType, summaryCount(oreType))}}&nbsp;m<sup>3</sup></td>
+              </tr>
+              <!-- <tr v-for="(oreVariant, variantData) in ores[oreType]"> -->
+              <tr v-for="oreVariant in oreVariantCheck(oreType)">
+                <td style="text-align: right;">{{ oreVariant }}</td>
+                <td>{{ variantCount(oreType, oreVariant) | round }}</td>
+                <td>{{ variantVolume(oreType, oreVariant) }}&nbsp;m<sup>3</sup></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
 
     <div class="text-center">
       Created by <a href="https://gate.eveonline.com/Profile/Marumis%20Wuif" target="_blank">Marumis Wuif</a><br/>

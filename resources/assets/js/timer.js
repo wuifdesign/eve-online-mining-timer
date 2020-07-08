@@ -27,6 +27,7 @@
           throw 'shorter 4';
         }
 
+        scanElement.variant = elementPart[0];
         scanElement.label = elementPart[0] + ' - ' + elementPart[3];
         scanElement.count = parseInt(elementPart[1].replace(/\u00a0/g, '').replace(' ', '').replace('.', '').replace(',', ''));
 
@@ -207,7 +208,7 @@
           }
           self.data.count -= self.ore_per_sec;
           self.addCargo(oreCount * self.ore_size);
-          self.addOre("veldspar", "Veldspar", oreCount);
+          self.addOre(self.data.ore, self.data.variant, oreCount);
           if (self.data.count <= 0) {
             $('#' + self.settings.task_sound)[0].play();
             self.data.count = 0;
@@ -250,7 +251,7 @@
         tasks: [],
         ores: {
           "veldspar": { "Veldspar": { count: 0, ratio: 1 }, "Concentrated Veldspar": { count: 0, ratio: 1.05 }, "Dense Veldspar": { count: 0, ratio: 1.1 }, "Stable Veldspar": { count: 0, ratio: 1.15 } },
-          "scordite": { "Scordite": { count: 5, ratio: 1 }, "Condensed Scordite": { count: 0, ratio: 1.05 }, "Massive Scordite": { count: 0, ratio: 1.1 }, "Glossy Scordite": { count: 0, ratio: 1.15 } },
+          "scordite": { "Scordite": { count: 0, ratio: 1 }, "Condensed Scordite": { count: 0, ratio: 1.05 }, "Massive Scordite": { count: 0, ratio: 1.1 }, "Glossy Scordite": { count: 0, ratio: 1.15 } },
           "pyroxeres": { "Pyroxeres": { count: 0, ratio: 1 }, "Solid Pyroxeres": { count: 0, ratio: 1.05 }, "Viscous Pyroxeres": { count: 0, ratio: 1.1 }, "Opulent Pyroxeres": { count: 0, ratio: 1.15 } },
           "plagioclase": { "Plagioclase": { count: 0, ratio: 1 }, "Azure Plagioclase": { count: 0, ratio: 1.05 }, "Rich Plagioclase": { count: 0, ratio: 1.1 }, "Sparkling Plagioclase": { count: 0, ratio: 1.15 } },
           "omber": { "Omber": { count: 0, ratio: 1 }, "Silvery Omber": { count: 0, ratio: 1.05 }, "Golden Omber": { count: 0, ratio: 1.1 }, "Platinoid Omber": { count: 0, ratio: 1.15 } },
@@ -386,10 +387,14 @@
           this.cargo += add_yield;
         },
         addOre: function (oreType, oreVariant, oreYield) {
-          //console.log(oreType, oreVariant, oreYield);
-          //this.ores[oreType][oreVariant][0] += oreYield;
-          //this.oreCount.veldspar += oreYield;
-          this.ores.veldspar.Veldspar.count += oreYield;
+          if (this.ores[oreType] && oreYield) {
+            if (this.ores[oreType][oreVariant]) {
+              this.ores[oreType][oreVariant].count += oreYield;
+            } else {
+              var baseVariant = Object.keys(this.ores[oreType])[0];
+              this.ores[oreType][baseVariant].count += oreYield;
+            }
+          }
         },
         playSound: function (sound) {
           $('#' + sound)[0].play();
@@ -410,6 +415,15 @@
             }
           });
         },
+        clearSummary: function () {
+          var oreTypes = Object.keys(this.ores);
+          for(var i = 0; i < oreTypes.length; i++) {
+            var oreVariants = Object.keys(this.ores[oreTypes[i]]);
+            for(var j = 0; j < oreVariants.length; j++) {
+              this.ores[oreTypes[i]][oreVariants[j]].count = 0;
+            }
+          }
+        },
         oreTypeCheck: function(ores) {
           var oreTypes = Object.keys(ores);
           var oreSummary = [];
@@ -421,8 +435,8 @@
               }
             }
           }
-          return oreTypes; //FIXME: THIS IS FOR TESTING
-          //return oreSummary;
+          //return oreTypes; //FIXME: THIS IS FOR TESTING
+          return oreSummary;
         },
         oreVariantCheck: function(oreType) {
           var oreVariants = Object.keys(this.ores[oreType]);
@@ -432,12 +446,20 @@
               variantSummary.push(oreVariants[i]);
             }
           }
-          return oreVariants; //FIXME: THIS IS FOR TESTING
-          //return variantSummary;
+          //return oreVariants; //FIXME: THIS IS FOR TESTING
+          return variantSummary;
         },
         summaryType: function(oreType) {
           var baseVariant = Object.keys(this.ores[oreType])[0];
           return baseVariant;
+        },
+        summaryCount: function(oreType) {
+          var oreVariants = Object.keys(this.ores[oreType]);
+          var oreCounts = 0;
+          for (var i = 0; i < oreVariants.length; i++) {
+            oreCounts += this.ores[oreType][oreVariants[i]].count;
+          }
+          return oreCounts;
         },
         variantCount: function(oreType, oreVariant) {
           var oreCount = this.ores[oreType][oreVariant].count;
@@ -446,6 +468,15 @@
             return 0;
           } else {
             return oreCount;
+          }
+        },
+        summaryVolume: function(oreType, summaryCount) {
+          var oreSize = configData.size[oreType];
+
+          if(!oreType || isNaN(summaryCount) || isNaN(oreSize)) {
+            return 0;
+          } else {
+            return Math.round(summaryCount * oreSize * 100) / 100;
           }
         },
         variantVolume: function(oreType, oreVariant) {
@@ -467,6 +498,7 @@
                 label: value.label,
                 ore: value.ore,
                 count: value.count,
+                variant: value.variant,
               });
             });
             self.scanner_data = '';
