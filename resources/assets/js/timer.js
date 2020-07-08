@@ -13,6 +13,8 @@
     'sound-7': 'Sound 7',
   };
 
+  Vue.config.devtools = true; // Adding for testing
+
   var parseScanResult = function (result) {
     var scan_data = [];
     $.each(result.split('\n'), function (index, element) {
@@ -126,6 +128,10 @@
         type: Function,
         required: true,
       },
+      'add-ore': {
+        type: Function,
+        required: true
+      },
     },
     data: function () {
       return {
@@ -201,6 +207,7 @@
           }
           self.data.count -= self.ore_per_sec;
           self.addCargo(oreCount * self.ore_size);
+          self.addOre("veldspar", "Veldspar", oreCount);
           if (self.data.count <= 0) {
             $('#' + self.settings.task_sound)[0].play();
             self.data.count = 0;
@@ -242,22 +249,22 @@
         },
         tasks: [],
         ores: {
-          "veldspar": { "Veldspar": [0, 1], "Concentrated Veldspar": [0, 1.05], "Dense Veldspar": [0, 1.1], "Stable Veldspar": [0, 1.15] },
-          "scordite": { "Scordite": [0, 1], "Condensed Scordite": [0, 1.05], "Massive Scordite": [0, 1.1], "Glossy Scordite": [0, 1.15] },
-          "pyroxeres": { "Pyroxeres": [0, 1], "Solid Pyroxeres": [0, 1.05], "Viscous Pyroxeres": [0, 1.1], "Opulent Pyroxeres": [0, 1.15] },
-          "plagioclase": { "Plagioclase": [0, 1], "Azure Plagioclase": [0, 1.05], "Rich Plagioclase": [0, 1.1], "Sparkling Plagioclase": [0, 1.15] },
-          "omber": { "Omber": [0, 1], "Silvery Omber": [0, 1.05], "Golden Omber": [0, 1.1], "Platinoid Omber": [0, 1.15] },
-          "kernite": { "Kernite": [0, 1], "Luminous Kernite": [0, 1.05], "Fiery Kernite": [0, 1.1], "Resplendant Kernite": [0, 1.15] },
-          "jaspet": { "Jaspet": [0, 1], "Pure Jaspet": [0, 1.05], "Pristine Jaspet": [0, 1.1], "Immaculate Jaspet": [0, 1.15] },
-          "hemorphite": { "Hemorphite": [0, 1], "Vivid Hemorphite": [0, 1.05], "Radiant Hemorphite": [0, 1.1], "Scintillating Hemorphite": [0, 1.15] },
-          "hedbergite": { "Hedbergite": [0, 1], "Vitric Hedbergite": [0, 1.05], "Glazed Hedbergite": [0, 1.1], "Lustrous Hedbergite": [0, 1.15] },
-          "gneiss": { "Gneiss": [0, 1], "Iridescent Gneiss": [0, 1.05], "Prismatic Gneiss": [0, 1.1], "Brilliant Gneiss": [0, 1.15] },
-          "dark ochre": { "Dark Ochre": [0, 1], "Onyx Ochre": [0, 1.05], "Obsidian Ochre": [0, 1.1], "Jet Ochre": [0, 1.15] },
-          "spodumain": { "Spodumain": [0, 1], "Bright Spodumain": [0, 1.05], "Gleaming Spodumain": [0, 1.1], "Dazzling Spodumain": [0, 1.15] },
-          "crokite": { "Crokite": [0, 1], "Sharp Crokite": [0, 1.05], "Crystalline Crokite": [0, 1.1], "Pellucid Crokite": [0, 1.15] },
-          "bistot": { "Bistot": [0, 1], "Triclinic Bistot": [0, 1.05], "Monoclinic Bistot": [0, 1.1], "Cubic Bistot": [0, 1.15] },
-          "arkonor": { "Arkonor": [0, 1], "Crimson Arkonor": [0, 1.05], "Prime Arkonor": [0, 1.1], "Flawless Arkonor": [0, 1.15] },
-          "mercoxit": { "Mercoxit": [0, 1], "Magma Mercoxit": [0, 1.05], "Vitreous Mercoxit": [0, 1.1] },
+          "veldspar": { "Veldspar": { count: 0, ratio: 1 }, "Concentrated Veldspar": { count: 0, ratio: 1.05 }, "Dense Veldspar": { count: 0, ratio: 1.1 }, "Stable Veldspar": { count: 0, ratio: 1.15 } },
+          "scordite": { "Scordite": { count: 5, ratio: 1 }, "Condensed Scordite": { count: 0, ratio: 1.05 }, "Massive Scordite": { count: 0, ratio: 1.1 }, "Glossy Scordite": { count: 0, ratio: 1.15 } },
+          "pyroxeres": { "Pyroxeres": { count: 0, ratio: 1 }, "Solid Pyroxeres": { count: 0, ratio: 1.05 }, "Viscous Pyroxeres": { count: 0, ratio: 1.1 }, "Opulent Pyroxeres": { count: 0, ratio: 1.15 } },
+          "plagioclase": { "Plagioclase": { count: 0, ratio: 1 }, "Azure Plagioclase": { count: 0, ratio: 1.05 }, "Rich Plagioclase": { count: 0, ratio: 1.1 }, "Sparkling Plagioclase": { count: 0, ratio: 1.15 } },
+          "omber": { "Omber": { count: 0, ratio: 1 }, "Silvery Omber": { count: 0, ratio: 1.05 }, "Golden Omber": { count: 0, ratio: 1.1 }, "Platinoid Omber": { count: 0, ratio: 1.15 } },
+          "kernite": { "Kernite": { count: 0, ratio: 1 }, "Luminous Kernite": { count: 0, ratio: 1.05 }, "Fiery Kernite": { count: 0, ratio: 1.1 }, "Resplendant Kernite": { count: 0, ratio: 1.15 } },
+          "jaspet": { "Jaspet": { count: 0, ratio: 1 }, "Pure Jaspet": { count: 0, ratio: 1.05 }, "Pristine Jaspet": { count: 0, ratio: 1.1 }, "Immaculate Jaspet": { count: 0, ratio: 1.15 } },
+          "hemorphite": { "Hemorphite": { count: 0, ratio: 1 }, "Vivid Hemorphite": { count: 0, ratio: 1.05 }, "Radiant Hemorphite": { count: 0, ratio: 1.1 }, "Scintillating Hemorphite": { count: 0, ratio: 1.15 } },
+          "hedbergite": { "Hedbergite": { count: 0, ratio: 1 }, "Vitric Hedbergite": { count: 0, ratio: 1.05 }, "Glazed Hedbergite": { count: 0, ratio: 1.1 }, "Lustrous Hedbergite": { count: 0, ratio: 1.15 } },
+          "gneiss": { "Gneiss": { count: 0, ratio: 1 }, "Iridescent Gneiss": { count: 0, ratio: 1.05 }, "Prismatic Gneiss": { count: 0, ratio: 1.1 }, "Brilliant Gneiss": { count: 0, ratio: 1.15 } },
+          "dark ochre": { "Dark Ochre": { count: 0, ratio: 1 }, "Onyx Ochre": { count: 0, ratio: 1.05 }, "Obsidian Ochre": { count: 0, ratio: 1.1 }, "Jet Ochre": { count: 0, ratio: 1.15 } },
+          "spodumain": { "Spodumain": { count: 0, ratio: 1 }, "Bright Spodumain": { count: 0, ratio: 1.05 }, "Gleaming Spodumain": { count: 0, ratio: 1.1 }, "Dazzling Spodumain": { count: 0, ratio: 1.15 } },
+          "crokite": { "Crokite": { count: 0, ratio: 1 }, "Sharp Crokite": { count: 0, ratio: 1.05 }, "Crystalline Crokite": { count: 0, ratio: 1.1 }, "Pellucid Crokite": { count: 0, ratio: 1.15 } },
+          "bistot": { "Bistot": { count: 0, ratio: 1 }, "Triclinic Bistot": { count: 0, ratio: 1.05 }, "Monoclinic Bistot": { count: 0, ratio: 1.1 }, "Cubic Bistot": { count: 0, ratio: 1.15 } },
+          "arkonor": { "Arkonor": { count: 0, ratio: 1 }, "Crimson Arkonor": { count: 0, ratio: 1.05 }, "Prime Arkonor": { count: 0, ratio: 1.1 }, "Flawless Arkonor": { count: 0, ratio: 1.15 } },
+          "mercoxit": { "Mercoxit": { count: 0, ratio: 1 }, "Magma Mercoxit": { count: 0, ratio: 1.05 }, "Vitreous Mercoxit": { count: 0, ratio: 1.1 } },
         },
       },
       created: function () {
@@ -378,6 +385,12 @@
         addCargo: function (add_yield) {
           this.cargo += add_yield;
         },
+        addOre: function (oreType, oreVariant, oreYield) {
+          //console.log(oreType, oreVariant, oreYield);
+          //this.ores[oreType][oreVariant][0] += oreYield;
+          //this.oreCount.veldspar += oreYield;
+          this.ores.veldspar.Veldspar.count += oreYield;
+        },
         playSound: function (sound) {
           $('#' + sound)[0].play();
         },
@@ -396,6 +409,54 @@
               }, 0);
             }
           });
+        },
+        oreTypeCheck: function(ores) {
+          var oreTypes = Object.keys(ores);
+          var oreSummary = [];
+          for (var i = 0; i < oreTypes.length; i++) {
+            var oreVariants = Object.keys(ores[oreTypes[i]]);
+            for (var j = 0; j < oreVariants.length; j++) {
+              if(ores[oreTypes[i]][oreVariants[j]].count !== 0 && !oreSummary.includes(oreTypes[i])) {
+                oreSummary.push(oreTypes[i]);
+              }
+            }
+          }
+          return oreTypes; //FIXME: THIS IS FOR TESTING
+          //return oreSummary;
+        },
+        oreVariantCheck: function(oreType) {
+          var oreVariants = Object.keys(this.ores[oreType]);
+          var variantSummary = [];
+          for (var i = 0; i < oreVariants.length; i++) {
+            if(this.ores[oreType][oreVariants[i]].count !== 0 && !variantSummary.includes(oreVariants[i])) {
+              variantSummary.push(oreVariants[i]);
+            }
+          }
+          return oreVariants; //FIXME: THIS IS FOR TESTING
+          //return variantSummary;
+        },
+        summaryType: function(oreType) {
+          var baseVariant = Object.keys(this.ores[oreType])[0];
+          return baseVariant;
+        },
+        variantCount: function(oreType, oreVariant) {
+          var oreCount = this.ores[oreType][oreVariant].count;
+
+          if(!oreType || !oreVariant || isNaN(oreCount)) {
+            return 0;
+          } else {
+            return oreCount;
+          }
+        },
+        variantVolume: function(oreType, oreVariant) {
+          var oreCount = this.ores[oreType][oreVariant].count;
+          var oreSize = configData.size[oreType];
+
+          if(!oreType || !oreVariant || isNaN(oreCount) || isNaN(oreSize)) {
+            return 0;
+          } else {
+            return Math.round(oreCount * oreSize * 100) / 100;
+          }
         },
         parseScannerData: function () {
           var self = this;

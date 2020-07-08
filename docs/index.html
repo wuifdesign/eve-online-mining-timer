@@ -19,6 +19,7 @@
   <link rel="stylesheet" href="./assets/css/main.min.css" type="text/css">
 </head>
 <body>
+<script src="http://localhost:8098"></script> <!-- Remove this later -->
 
 <div class="header">Eve Online - Mining Timer</div>
 
@@ -116,6 +117,7 @@
           v-for="task in tasks"
           :data="task"
           :add-cargo="addCargo"
+          :add-ore="addOre"
           :current_ship="current_ship"
           :yield_per_sec_m3="yield_per_sec_m3"
           :remove-task="removeTask"
@@ -145,6 +147,41 @@
       <div class="col-sm-6 col-sm-offset-3">
         <h4>Paste Survey Scanner Result</h4>
         <textarea class="form-control no-resize" v-model="scanner_data" v-on:paste="parseScannerData"></textarea>
+      </div>
+    </div>
+
+    <hr/>
+
+    <div class="row text-center m-t">
+      <div class="col-sm-12">
+        <!-- <button class="btn btn-primary btn-border btn-sm btn-block" data-toggle="modal" data-target="#ships-modal">
+          <i class="fa fa-fw fa-paper-plane"></i> Manave My Ships
+        </button> -->
+        <h4>Mining Summary</h4>
+        &nbsp
+        <table class="table custom-table">
+          <thead>
+            <tr>
+              <th style="width: 15%;">Ore</th>
+              <th style="width: 20%;">Count</th>
+              <th style="width: 20%;">Volume</th>
+            </tr>
+          </thead>
+          <!-- <tbody v-for="(oreType, oreVariants) in ores"> -->
+            <tbody v-for="oreType in oreTypeCheck(ores)">
+            <tr>
+              <td style="border-bottom: 2px solid white!important;">{{ summaryType(oreType) }}</td>
+              <td style="border-bottom: 2px solid white!important;">Veldspar SummaryCount</td>
+              <td style="border-bottom: 2px solid white!important;">Veldspar SummaryVolume</td>
+            </tr>
+            <!-- <tr v-for="(oreVariant, variantData) in ores[oreType]"> -->
+            <tr v-for="oreVariant in oreVariantCheck(oreType)">
+              <td style="text-align: right;">{{ oreVariant }}</td>
+              <td>{{ variantCount(oreType, oreVariant) | round }}</td>
+              <td>{{ variantVolume(oreType, oreVariant) }}&nbsp;m<sup>3</sup></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
