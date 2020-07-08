@@ -267,6 +267,17 @@
           "arkonor": { "Arkonor": { count: 0, ratio: 1 }, "Crimson Arkonor": { count: 0, ratio: 1.05 }, "Prime Arkonor": { count: 0, ratio: 1.1 }, "Flawless Arkonor": { count: 0, ratio: 1.15 } },
           "mercoxit": { "Mercoxit": { count: 0, ratio: 1 }, "Magma Mercoxit": { count: 0, ratio: 1.05 }, "Vitreous Mercoxit": { count: 0, ratio: 1.1 } },
         },
+        refineList: [],
+        refine: {
+          "tritanium": 0,
+          "pyerite": 0,
+          "mexallon": 0,
+          "isogen": 0,
+          "nocxium": 0,
+          "zydrine": 0,
+          "megacyte": 0,
+          "morphite": 0
+        },
       },
       created: function () {
         this.current_ship_index = localStorage.getItem('current_ship_index');
@@ -388,13 +399,29 @@
         },
         addOre: function (oreType, oreVariant, oreYield) {
           if (this.ores[oreType] && oreYield) {
-            if (this.ores[oreType][oreVariant]) {
-              this.ores[oreType][oreVariant].count += oreYield;
-            } else {
-              var baseVariant = Object.keys(this.ores[oreType])[0];
-              this.ores[oreType][baseVariant].count += oreYield;
+            if (!this.ores[oreType][oreVariant]) {
+              oreVariant = Object.keys(this.ores[oreType])[0];
             }
+            this.ores[oreType][oreVariant].count += oreYield;
+            //console.log("This should fire either way");
+            this.addMinerals(oreType, oreVariant, oreYield);
+            //this.mineralRecount(); //FIXME:
           }
+        },
+        addMinerals: function(oreType, oreVariant, oreYield) {
+          //var oreCount = Math.floor(this.ores[oreType][oreVariant].count/100)*100;
+          var oreRatio = this.ores[oreType][oreVariant].ratio;
+          var oreRefine = configData.refine[oreType];
+
+          //COUNT * RATE * SETTINGS //FIXME: ADD real ratios not 100%
+          this.refine.tritanium += oreYield * oreRatio * oreRefine.tritanium;
+          this.refine.pyerite += oreYield * oreRatio * oreRefine.pyerite;
+          this.refine.mexallon += oreYield * oreRatio * oreRefine.mexallon;
+          this.refine.isogen += oreYield * oreRatio * oreRefine.isogen;
+          this.refine.nocxium += oreYield * oreRatio * oreRefine.nocxium;
+          this.refine.zydrine += oreYield * oreRatio * oreRefine.zydrine;
+          this.refine.megacyte += oreYield * oreRatio * oreRefine.megacyte;
+          this.refine.morphite += oreYield * oreRatio * oreRefine.morphite;
         },
         playSound: function (sound) {
           $('#' + sound)[0].play();
@@ -423,6 +450,17 @@
               this.ores[oreTypes[i]][oreVariants[j]].count = 0;
             }
           }
+          this.refineList = [];
+        },
+        clearRefine: function () {
+          this.refine.tritanium = 0;
+          this.refine.pyerite = 0;
+          this.refine.mexallon = 0;
+          this.refine.isogen = 0;
+          this.refine.nocxium = 0;
+          this.refine.zydrine = 0;
+          this.refine.megacyte = 0;
+          this.refine.morphite = 0;
         },
         oreTypeCheck: function(ores) {
           var oreTypes = Object.keys(ores);
@@ -444,6 +482,9 @@
           for (var i = 0; i < oreVariants.length; i++) {
             if(this.ores[oreType][oreVariants[i]].count !== 0 && !variantSummary.includes(oreVariants[i])) {
               variantSummary.push(oreVariants[i]);
+              if(!this.refineList.includes(oreVariants[i])) {
+                this.refineList.push(oreVariants[i]);
+              }
             }
           }
           //return oreVariants; //FIXME: THIS IS FOR TESTING
@@ -488,6 +529,9 @@
           } else {
             return Math.round(oreCount * oreSize * 100) / 100;
           }
+        },
+        mineralRecount: function() {
+          console.log("This would recount");
         },
         parseScannerData: function () {
           var self = this;

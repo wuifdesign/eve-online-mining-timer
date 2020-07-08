@@ -161,6 +161,46 @@
     <hr/>
 
     <div class="row text-center m-t">
+      <div class="col-sm-12">
+        <h4 class="col-sm-6 col-sm-offset-3">Refinery</h4>
+        <div class="col-sm-3 text-right">
+          <button class="btn btn-danger btn-border" v-on:click="clearRefine">
+            <i class="fa fa-fw fa-trash"></i> Clear Refinery
+          </button>
+        </div>
+        <table class="table custom-table">
+          <thead>
+            <tr>
+              <th class="hidden-sm hidden-md hidden-lg">Tri</th><th class="hidden-xs">Tritanium</th>
+              <th class="hidden-sm hidden-md hidden-lg">Pye</th><th class="hidden-xs">Pyerite</th>
+              <th class="hidden-sm hidden-md hidden-lg">Mex</th><th class="hidden-xs">Mexallon</th>
+              <th class="hidden-sm hidden-md hidden-lg">Iso</th><th class="hidden-xs">Isogen</th>
+              <th class="hidden-sm hidden-md hidden-lg">Noc</th><th class="hidden-xs">Nocxium</th>
+              <th class="hidden-sm hidden-md hidden-lg">Zyd</th><th class="hidden-xs">Zydrine</th>
+              <th class="hidden-sm hidden-md hidden-lg">Meg</th><th class="hidden-xs">Megacyte</th>
+              <th class="hidden-sm hidden-md hidden-lg">Mor</th><th class="hidden-xs">Morphite</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td v-for="mineral in refine">{{mineral | number}}</td>
+            </tr>
+            <tr>
+              <td>Tritanium</th>
+              <td>Pyerite</th>
+              <td>Mexallon</th>
+              <td>Isogen</th>
+              <td>Nocxium</th>
+              <td>Zydrine</th>
+              <td>Megacyte</th>
+              <td>Morphite</th>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="row text-center m-t">
         <div class="col-sm-12">
           <h4 class="col-sm-6 col-sm-offset-3">Mining Summary</h4>
           <div class="col-sm-3 text-right">
@@ -180,13 +220,13 @@
               <tbody v-for="oreType in oreTypeCheck(ores)">
               <tr>
                 <td style="border-bottom: 2px solid white!important;">{{ summaryType(oreType) }}</td>
-                <td style="border-bottom: 2px solid white!important;">{{ summaryCount(oreType) | round }}</td>
+                <td style="border-bottom: 2px solid white!important;">{{ summaryCount(oreType) | number }}</td>
                 <td style="border-bottom: 2px solid white!important;">{{ summaryVolume(oreType, summaryCount(oreType))}}&nbsp;m<sup>3</sup></td>
               </tr>
               <!-- <tr v-for="(oreVariant, variantData) in ores[oreType]"> -->
               <tr v-for="oreVariant in oreVariantCheck(oreType)">
                 <td style="text-align: right;">{{ oreVariant }}</td>
-                <td>{{ variantCount(oreType, oreVariant) | round }}</td>
+                <td>{{ variantCount(oreType, oreVariant) | number }}</td>
                 <td>{{ variantVolume(oreType, oreVariant) }}&nbsp;m<sup>3</sup></td>
               </tr>
             </tbody>
