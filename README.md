@@ -5,8 +5,11 @@
 * [![release-version](https://img.shields.io/badge/v0.0.1-Live-success.svg)](https://wuifdesign.github.io/eve-online-mining-timer)
 
 Keep track of your mining lasers and strip miners to optimize your yield.
+
 Keep track of how much you're ore yields, share with corp or friends
+
 View estimated mineral gains based on actual ore mined and skills
+
 Know exactly how much you still need to build that titan
 
 ##### Never run empty mining circles again.
