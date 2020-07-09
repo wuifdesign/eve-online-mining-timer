@@ -19,7 +19,6 @@
   <link rel="stylesheet" href="./assets/css/main.min.css" type="text/css">
 </head>
 <body>
-<script src="http://localhost:8098"></script> <!-- Remove this later -->
 
 <div class="header">Eve Online - Mining Timer</div>
 
@@ -59,6 +58,35 @@
     <div class="text-right m-b text-sm">
       Yield/sec: {{ yield_per_sec_m3 | toFixed }} m³ | Time for full Cargo: {{ full_cargo_time | time }}
     </div>
+
+    <div class="row text-center m-t">
+        <div class="col-sm-12 text-right">
+          <button class="btn btn-danger btn-border" v-on:click="clearRefine">
+            <i class="fa fa-fw fa-repeat"></i> Reset minerals
+          </button>
+        </div>
+        <div class="col-sm-12">
+          <table class="table custom-table">
+            <thead>
+              <tr>
+                <th class="hidden-sm hidden-md hidden-lg">Tri</th><th class="hidden-xs">Tritanium</th>
+                <th class="hidden-sm hidden-md hidden-lg">Pye</th><th class="hidden-xs">Pyerite</th>
+                <th class="hidden-sm hidden-md hidden-lg">Mex</th><th class="hidden-xs">Mexallon</th>
+                <th class="hidden-sm hidden-md hidden-lg">Iso</th><th class="hidden-xs">Isogen</th>
+                <th class="hidden-sm hidden-md hidden-lg">Noc</th><th class="hidden-xs">Nocxium</th>
+                <th class="hidden-sm hidden-md hidden-lg">Zyd</th><th class="hidden-xs">Zydrine</th>
+                <th class="hidden-sm hidden-md hidden-lg">Meg</th><th class="hidden-xs">Megacyte</th>
+                <th class="hidden-sm hidden-md hidden-lg">Mor</th><th class="hidden-xs">Morphite</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td v-for="mineral in refine">{{mineral | number}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
 
     <script type="text/x-template" id="grid-template">
       <tr>
@@ -132,6 +160,9 @@
         <button class="btn btn-primary btn-border" data-toggle="modal" data-target="#settings-modal">
           <i class="fa fa-fw fa-cogs"></i> Edit Settings
         </button>
+        <button class="btn btn-primary btn-border" data-toggle="modal" data-target="#refinery-modal">
+          <i class="fa fa-fw fa-user"></i> Edit Refinery
+        </button>
       </div>
       <div class="col-sm-6 text-right">
         <button class="btn btn-success btn-border" v-on:click="addEmptyTask">
@@ -161,48 +192,8 @@
     <hr/>
 
     <div class="row text-center m-t">
-      <div class="col-sm-12">
-        <h4 class="col-sm-6 col-sm-offset-3">Refinery</h4>
-        <div class="col-sm-3 text-right">
-          <button class="btn btn-danger btn-border" v-on:click="clearRefine">
-            <i class="fa fa-fw fa-trash"></i> Clear Refinery
-          </button>
-        </div>
-        <table class="table custom-table">
-          <thead>
-            <tr>
-              <th class="hidden-sm hidden-md hidden-lg">Tri</th><th class="hidden-xs">Tritanium</th>
-              <th class="hidden-sm hidden-md hidden-lg">Pye</th><th class="hidden-xs">Pyerite</th>
-              <th class="hidden-sm hidden-md hidden-lg">Mex</th><th class="hidden-xs">Mexallon</th>
-              <th class="hidden-sm hidden-md hidden-lg">Iso</th><th class="hidden-xs">Isogen</th>
-              <th class="hidden-sm hidden-md hidden-lg">Noc</th><th class="hidden-xs">Nocxium</th>
-              <th class="hidden-sm hidden-md hidden-lg">Zyd</th><th class="hidden-xs">Zydrine</th>
-              <th class="hidden-sm hidden-md hidden-lg">Meg</th><th class="hidden-xs">Megacyte</th>
-              <th class="hidden-sm hidden-md hidden-lg">Mor</th><th class="hidden-xs">Morphite</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td v-for="mineral in refine">{{mineral | number}}</td>
-            </tr>
-            <tr>
-              <td>Tritanium</th>
-              <td>Pyerite</th>
-              <td>Mexallon</th>
-              <td>Isogen</th>
-              <td>Nocxium</th>
-              <td>Zydrine</th>
-              <td>Megacyte</th>
-              <td>Morphite</th>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="row text-center m-t">
         <div class="col-sm-12">
-          <h4 class="col-sm-6 col-sm-offset-3">Mining Summary</h4>
+          <h4 class="col-sm-6 col-sm-offset-3">Summary</h4>
           <div class="col-sm-3 text-right">
             <button class="btn btn-danger btn-border" v-on:click="clearSummary">
               <i class="fa fa-fw fa-trash"></i> Clear Summary
@@ -353,6 +344,90 @@
       </div>
     </div>
   </div>
+
+  <div class="modal fade" id="refinery-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="myModalLabel">
+              <i class="fa fa-fw fa-cogs"></i>Reprocessing ~ {{ reprocessingYield }}%
+            </h4>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <b>Reprocessing Yield</b>
+              <div class="radio">
+                <label>
+                  <input type="radio" v-bind:value="false" v-on:change="saveRefinery" v-model="refinery.reprocessingType">Custom / Flatrate
+                </label>
+              </div>
+              <div class="radio">
+                <label>
+                  <input type="radio" v-bind:value="true" v-on:change="saveRefinery" v-model="refinery.reprocessingType">Calculated
+                </label>
+              </div>
+            </div>
+            <div class="form-group" v-if="!refinery.reprocessingType">
+              <label for="flatrate-yield">Flatrate reprocessing yield in %</label>
+              <input type="text" v-on:change="saveRefinery" v-model="refinery.reprocessingFlat" class="form-control" id="flatrate-yield" placeholder="50">
+            </div>
+            <div class="form-group" v-if="refinery.reprocessingType">
+              <b>Station & Skills</b>
+              <div class="radio">
+                <span>Station Efficiency: </span>
+                <select v-on:change="saveRefinery" v-model="refinery.reprocessingStation">
+                  <option v-bind:value=25>25%</option>
+                  <option v-bind:value=30>30%</option>
+                  <option v-bind:value=32>32%</option>
+                  <option v-bind:value=35>35%</option>
+                  <option v-bind:value=40>40%</option>
+                  <option v-bind:value=50>50%</option>
+                </select>
+              </div>
+              <div class="radio">
+                <span>Reprocessing skill: </span>
+                <select v-on:change="saveRefinery" v-model="refinery.skillProcessing">
+                  <option v-for="n in 6" v-bind:value="n">{{n}}</option>
+                </select>
+              </div>
+              <div class="radio">
+                <span>Reprocessing Efficiency skill: </span>
+                <select v-on:change="saveRefinery" v-model="refinery.skillProcessingEfficiency">
+                  <option v-for="n in 6" v-bind:value="n">{{n}}</option>
+                </select>
+              </div>
+              <div class="radio">
+                <span>Zainou 'Beancounter' implant: </span>
+                <select v-on:change="saveRefinery" v-model="refinery.skillImplant">
+                  <option v-bind:value=0>0% - None</option>
+                  <option v-bind:value=1>1% - RX-801</option>
+                  <option v-bind:value=2>2% - RX-802</option>
+                  <option v-bind:value=4>4% - RX-804</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group" v-if="refinery.reprocessingType">
+              <b>Reprocessing Ores</b>
+              <br>
+              <small>These will be used for actual yield calculations,
+                <br>the approximation above shows reprocessing at X Ore IV</small>
+              <div class="radio" v-for="(key, value) in refinery.skillOres">
+                <select v-on:change="saveRefinery" v-model="refinery.skillOres[key]">
+                  <option v-for="n in 6" v-bind:value="n">{{n}}</option>
+                </select>
+                <span> {{key}}</span>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
   <div id="app-audio-holder"></div>
 </div>

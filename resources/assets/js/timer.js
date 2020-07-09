@@ -13,8 +13,6 @@
     'sound-7': 'Sound 7',
   };
 
-  Vue.config.devtools = true; // Adding for testing
-
   var parseScanResult = function (result) {
     var scan_data = [];
     $.each(result.split('\n'), function (index, element) {
@@ -267,7 +265,6 @@
           "arkonor": { "Arkonor": { count: 0, ratio: 1 }, "Crimson Arkonor": { count: 0, ratio: 1.05 }, "Prime Arkonor": { count: 0, ratio: 1.1 }, "Flawless Arkonor": { count: 0, ratio: 1.15 } },
           "mercoxit": { "Mercoxit": { count: 0, ratio: 1 }, "Magma Mercoxit": { count: 0, ratio: 1.05 }, "Vitreous Mercoxit": { count: 0, ratio: 1.1 } },
         },
-        refineList: [],
         refine: {
           "tritanium": 0,
           "pyerite": 0,
@@ -277,6 +274,34 @@
           "zydrine": 0,
           "megacyte": 0,
           "morphite": 0
+        },
+        refinery: {
+          reprocessingYield: 0.5,
+          reprocessingType: true,
+          reprocessingFlat: 50,
+          reprocessingStation: 50,
+          reprocessingTax: 0,
+          skillProcessing: 5,
+          skillProcessingEfficiency: 5,
+          skillImplant: 0,
+          skillOres: {
+            "veldspar": 4,
+            "scordite": 4,
+            "pyroxeres": 4,
+            "plagioclase": 4,
+            "omber": 4,
+            "kernite": 4,
+            "jaspet": 4,
+            "hemorphite": 4,
+            "hedbergite": 4,
+            "gneiss": 4,
+            "dark ochre": 4,
+            "spodumain": 4,
+            "crokite": 4,
+            "bistot": 4,
+            "arkonor": 4,
+            "mercoxit": 4,
+          }
         },
       },
       created: function () {
@@ -292,6 +317,11 @@
         var settings = localStorage.getItem('settings');
         if (settings !== null) {
           this.settings = JSON.parse(settings);
+        }
+
+        var refinery = localStorage.getItem('refinery');
+        if (refinery !== null) {
+          this.refinery = JSON.parse(refinery);
         }
       },
       watch: {
@@ -366,10 +396,32 @@
           var time = Math.round(this.current_ship.cargo / this.yield_per_sec_m3);
           return isNaN(time) ? 0 : time;
         },
+        reprocessingYield: function() {
+          var reprocessingYield = 0.5;
+          if (this.refinery !== null) {
+            if (this.refinery.reprocessingType) {
+              reprocessingYield = (this.refinery.reprocessingStation / 100)
+                                * (1 + this.refinery.skillProcessing * 0.03)
+                                * (1 + this.refinery.skillProcessingEfficiency * 0.02)
+                                * (1 + this.refinery.skillImplant / 100);
+              this.refinery.reprocessingYield = reprocessingYield;
+              return ((reprocessingYield * (1 + 4 * 0.02)) * 100).toFixed(2);
+            } else if (this.refinery.reprocessingFlat && !isNaN(this.refinery.reprocessingFlat)) {
+              reprocessingYield = parseFloat(this.refinery.reprocessingFlat, 10).toFixed(2) / 100;
+            } else {
+            }
+          }
+
+          this.refinery.reprocessingYield = reprocessingYield;
+          return (reprocessingYield * 100).toFixed(2);
+        }
       },
       methods: {
         saveSettings: function () {
           localStorage.setItem('settings', JSON.stringify(this.settings));
+        },
+        saveRefinery: function () {
+          localStorage.setItem('refinery', JSON.stringify(this.refinery));
         },
         addEmptyShip: function () {
           this.ships.push({
@@ -403,25 +455,27 @@
               oreVariant = Object.keys(this.ores[oreType])[0];
             }
             this.ores[oreType][oreVariant].count += oreYield;
-            //console.log("This should fire either way");
             this.addMinerals(oreType, oreVariant, oreYield);
-            //this.mineralRecount(); //FIXME:
           }
         },
         addMinerals: function(oreType, oreVariant, oreYield) {
-          //var oreCount = Math.floor(this.ores[oreType][oreVariant].count/100)*100;
           var oreRatio = this.ores[oreType][oreVariant].ratio;
           var oreRefine = configData.refine[oreType];
+          var refineryYield = this.refinery.reprocessingYield;
+          var refinerySkill = this.refinery.skillOres[oreType];
 
-          //COUNT * RATE * SETTINGS //FIXME: ADD real ratios not 100%
-          this.refine.tritanium += oreYield * oreRatio * oreRefine.tritanium;
-          this.refine.pyerite += oreYield * oreRatio * oreRefine.pyerite;
-          this.refine.mexallon += oreYield * oreRatio * oreRefine.mexallon;
-          this.refine.isogen += oreYield * oreRatio * oreRefine.isogen;
-          this.refine.nocxium += oreYield * oreRatio * oreRefine.nocxium;
-          this.refine.zydrine += oreYield * oreRatio * oreRefine.zydrine;
-          this.refine.megacyte += oreYield * oreRatio * oreRefine.megacyte;
-          this.refine.morphite += oreYield * oreRatio * oreRefine.morphite;
+          if (!refinerySkill) {
+            refineryYield = refineryYield * (1 + refinerySkill * 0.02);
+          }
+
+          this.refine.tritanium += oreYield * oreRatio * refineryYield * oreRefine.tritanium;
+          this.refine.pyerite += oreYield * oreRatio * refineryYield * oreRefine.pyerite;
+          this.refine.mexallon += oreYield * oreRatio * refineryYield * oreRefine.mexallon;
+          this.refine.isogen += oreYield * oreRatio * refineryYield * oreRefine.isogen;
+          this.refine.nocxium += oreYield * oreRatio * refineryYield * oreRefine.nocxium;
+          this.refine.zydrine += oreYield * oreRatio * refineryYield * oreRefine.zydrine;
+          this.refine.megacyte += oreYield * oreRatio * refineryYield * oreRefine.megacyte;
+          this.refine.morphite += oreYield * oreRatio * refineryYield * oreRefine.morphite;
         },
         playSound: function (sound) {
           $('#' + sound)[0].play();
@@ -450,7 +504,6 @@
               this.ores[oreTypes[i]][oreVariants[j]].count = 0;
             }
           }
-          this.refineList = [];
         },
         clearRefine: function () {
           this.refine.tritanium = 0;
@@ -473,8 +526,7 @@
               }
             }
           }
-          //return oreTypes; //FIXME: THIS IS FOR TESTING
-          return oreSummary;
+          return oreSummary; // use oreTypes for testing
         },
         oreVariantCheck: function(oreType) {
           var oreVariants = Object.keys(this.ores[oreType]);
@@ -482,13 +534,9 @@
           for (var i = 0; i < oreVariants.length; i++) {
             if(this.ores[oreType][oreVariants[i]].count !== 0 && !variantSummary.includes(oreVariants[i])) {
               variantSummary.push(oreVariants[i]);
-              if(!this.refineList.includes(oreVariants[i])) {
-                this.refineList.push(oreVariants[i]);
-              }
             }
           }
-          //return oreVariants; //FIXME: THIS IS FOR TESTING
-          return variantSummary;
+          return variantSummary; // use oreVariants for testing
         },
         summaryType: function(oreType) {
           var baseVariant = Object.keys(this.ores[oreType])[0];
@@ -529,9 +577,6 @@
           } else {
             return Math.round(oreCount * oreSize * 100) / 100;
           }
-        },
-        mineralRecount: function() {
-          console.log("This would recount");
         },
         parseScannerData: function () {
           var self = this;
