@@ -464,7 +464,7 @@
           var refineryYield = this.refinery.reprocessingYield;
           var refinerySkill = this.refinery.skillOres[oreType];
 
-          if (!refinerySkill) {
+          if (refinerySkill) {
             refineryYield = refineryYield * (1 + refinerySkill * 0.02);
           }
 
