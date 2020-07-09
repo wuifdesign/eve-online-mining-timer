@@ -10,3 +10,54 @@ Coesite	3,664	36,640 m3	9,445 m
 Coesite	3,664	36,640 m3	27 km
 Brimful Bitumens	1,685	16,850 m3	5,929 m
 Bitumens	3,664	36,640 m3	9,445 m
+
+### 100 refinable units of each standard ore ###
+
+Veldspar	100	10 m3	1,234 m
+Concentrated Veldspar	100	10 m3	1,234 m
+Dense Veldspar	100	10 m3	1,234 m
+Scordite	100	15 m3	1,234 m
+Condensed Scordite	100	15 m3	1,234 m
+Massive Scordite	100	15 m3	1,234 m
+Pyroxeres	100	30 m3	1,234 m
+Solid Pyroxeres	100	30 m3	1,234 m
+Viscous Pyroxeres	100	30 m3	1,234 m
+Plagioclase	100	35 m3	1,234 m
+Azure Plagioclase	100	35 m3	1,234 m
+Rich Plagioclase	100	35 m3	1,234 m
+Omber	100	60 m3	1,234 m
+Silvery Omber	100	60 m3	1,234 m
+Golden Omber	100	60 m3	1,234 m
+Kernite	100	120 m3	1,234 m
+Luminous Kernite	100	120 m3	1,234 m
+Fiery Kernite	100	120 m3	1,234 m
+Jaspet	100	200 m3	1,234 m
+Pure Jaspet	100	200 m3	1,234 m
+Pristine Jaspet	100	200 m3	1,234 m
+Hemorphite	100	300 m3	1,234 m
+Vivid Hemorphite	100	300 m3	1,234 m
+Radiant Hemorphite	100	300 m3	1,234 m
+Hedbergite	100	300 m3	1,234 m
+Vitric Hedbergite	100	300 m3	1,234 m
+Glazed Hedbergite	100	300 m3	1,234 m
+Gneiss	100	500 m3	1,234 m
+Iridescent Gneiss	100	500 m3	1,234 m
+Prismatic Gneiss	100	500 m3	1,234 m
+Dark Ochre	100	800 m3	1,234 m
+Onyx Ochre	100	800 m3	1,234 m
+Obsidian Ochre	100	800 m3	1,234 m
+Spodumain	100	1600 m3	1,234 m
+Bright Spodumain	100	1600 m3	1,234 m
+Gleaming Spodumain	100	1600 m3	1,234 m
+Crokite	100	1600 m3	1,234 m
+Sharp Crokite	100	1600 m3	1,234 m
+Crystalline Crokite (10%)	100	1600 m3	1,234 m
+Bistot	100	1600 m3	1,234 m
+Triclinic Bistot	100	1600 m3	1,234 m
+Monoclinic Bistot	100	1600 m3	1,234 m
+Arkonor	100	1600 m3	1,234 m
+Crimson Arkonor	100	1600 m3	1,234 m
+Prime Arkonor	100	1600 m3	1,234 m
+Mercoxit	100	4000 m3	1,234 m
+Magma Mercoxit	100	4000 m3	1,234 m
+Vitreous Mercoxit	100	4000 m3	1,234 m
