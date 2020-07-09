@@ -6,7 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>Eve Online - Mining Timer</title>
-  <meta name="description" content="Keep track of your mining lasers and strip miners to optimize your yield. Never run empty mining circles again.">
+  <meta name="description"
+        content="Keep track of your mining lasers and strip miners to optimize your yield. Never run empty mining circles again.">
 
   <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
 
@@ -44,11 +45,12 @@
     <div class="row m-b-xs">
       <div class="col-xs-6 col-sm-3 col-sm-offset-5">
         <button class="btn btn-primary btn-border btn-sm btn-block" data-toggle="modal" data-target="#ships-modal">
-          <i class="fa fa-fw fa-paper-plane"></i> Manave My Ships
+          <i class="fa fa-fw fa-paper-plane"></i> Manage My Ships
         </button>
       </div>
       <div class="col-xs-6 col-sm-4">
-        <select class="form-control input-sm" v-model="current_ship_index" v-bind:class="{error: current_ship_index === null}">
+        <select class="form-control input-sm" v-model="current_ship_index"
+                v-bind:class="{error: current_ship_index === null}">
           <option v-if="this.ship_count === 0" value="">No Ship found!</option>
           <option v-for="ship in validShips" v-bind:value="$index">{{ ship.name }}</option>
         </select>
@@ -59,34 +61,38 @@
       Yield/sec: {{ yield_per_sec_m3 | toFixed }} m³ | Time for full Cargo: {{ full_cargo_time | time }}
     </div>
 
-    <div class="row text-center m-t">
-        <div class="col-sm-12 text-right">
-          <button class="btn btn-danger btn-border" v-on:click="clearRefine">
-            <i class="fa fa-fw fa-repeat"></i> Reset minerals
-          </button>
-        </div>
-        <div class="col-sm-12">
-          <table class="table custom-table">
-            <thead>
-              <tr>
-                <th class="hidden-sm hidden-md hidden-lg">Tri</th><th class="hidden-xs">Tritanium</th>
-                <th class="hidden-sm hidden-md hidden-lg">Pye</th><th class="hidden-xs">Pyerite</th>
-                <th class="hidden-sm hidden-md hidden-lg">Mex</th><th class="hidden-xs">Mexallon</th>
-                <th class="hidden-sm hidden-md hidden-lg">Iso</th><th class="hidden-xs">Isogen</th>
-                <th class="hidden-sm hidden-md hidden-lg">Noc</th><th class="hidden-xs">Nocxium</th>
-                <th class="hidden-sm hidden-md hidden-lg">Zyd</th><th class="hidden-xs">Zydrine</th>
-                <th class="hidden-sm hidden-md hidden-lg">Meg</th><th class="hidden-xs">Megacyte</th>
-                <th class="hidden-sm hidden-md hidden-lg">Mor</th><th class="hidden-xs">Morphite</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td v-for="mineral in refine">{{mineral | number}}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+    <div class="text-right m-t">
+      <button class="btn btn-danger btn-border m-t" v-on:click="clearRefine">
+        <i class="fa fa-fw fa-repeat"></i> Reset minerals
+      </button>
+    </div>
+    <table class="table custom-table text-center m-t-sm">
+      <thead>
+      <tr>
+        <th class="hidden-sm hidden-md hidden-lg">Tri</th>
+        <th class="hidden-xs">Tritanium</th>
+        <th class="hidden-sm hidden-md hidden-lg">Pye</th>
+        <th class="hidden-xs">Pyerite</th>
+        <th class="hidden-sm hidden-md hidden-lg">Mex</th>
+        <th class="hidden-xs">Mexallon</th>
+        <th class="hidden-sm hidden-md hidden-lg">Iso</th>
+        <th class="hidden-xs">Isogen</th>
+        <th class="hidden-sm hidden-md hidden-lg">Noc</th>
+        <th class="hidden-xs">Nocxium</th>
+        <th class="hidden-sm hidden-md hidden-lg">Zyd</th>
+        <th class="hidden-xs">Zydrine</th>
+        <th class="hidden-sm hidden-md hidden-lg">Meg</th>
+        <th class="hidden-xs">Megacyte</th>
+        <th class="hidden-sm hidden-md hidden-lg">Mor</th>
+        <th class="hidden-xs">Morphite</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td v-for="mineral in refine">{{mineral | number}}</td>
+      </tr>
+      </tbody>
+    </table>
 
     <script type="text/x-template" id="grid-template">
       <tr>
@@ -101,7 +107,8 @@
           </select>
         </td>
         <td>
-          <input type="number" v-model="data.count | round" class="form-control text-center input-sm" v-bind:class="{error: data.count === 0}"/>
+          <input type="number" v-model="data.count | round" class="form-control text-center input-sm"
+                 v-bind:class="{error: data.count === 0}"/>
         </td>
         <td class="hidden-xs">{{ total_ore_size | number }}&nbsp;m<sup>3</sup></td>
         <td>
@@ -192,38 +199,42 @@
     <hr/>
 
     <div class="row text-center m-t">
-        <div class="col-sm-12">
-          <h4 class="col-sm-6 col-sm-offset-3">Summary</h4>
-          <div class="col-sm-3 text-right">
-            <button class="btn btn-danger btn-border" v-on:click="clearSummary">
-              <i class="fa fa-fw fa-trash"></i> Clear Summary
-            </button>
-          </div>
-          <table class="table custom-table">
-            <thead>
-              <tr>
-                <th style="width: 20%;">Ore</th>
-                <th style="width: 20%;">Count</th>
-                <th style="width: 20%;">Volume</th>
-              </tr>
-            </thead>
-            <!-- <tbody v-for="(oreType, oreVariants) in ores"> -->
-              <tbody v-for="oreType in oreTypeCheck(ores)">
-              <tr>
-                <td style="border-bottom: 2px solid white!important;">{{ summaryType(oreType) }}</td>
-                <td style="border-bottom: 2px solid white!important;">{{ summaryCount(oreType) | number }}</td>
-                <td style="border-bottom: 2px solid white!important;">{{ summaryVolume(oreType, summaryCount(oreType))}}&nbsp;m<sup>3</sup></td>
-              </tr>
-              <!-- <tr v-for="(oreVariant, variantData) in ores[oreType]"> -->
-              <tr v-for="oreVariant in oreVariantCheck(oreType)">
-                <td style="text-align: right;">{{ oreVariant }}</td>
-                <td>{{ variantCount(oreType, oreVariant) | number }}</td>
-                <td>{{ variantVolume(oreType, oreVariant) }}&nbsp;m<sup>3</sup></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      <h4 class="col-sm-6 col-sm-offset-3">Summary</h4>
+      <div class="col-sm-3 text-right">
+        <button class="btn btn-danger btn-border" v-on:click="clearSummary">
+          <i class="fa fa-fw fa-trash"></i> Clear Summary
+        </button>
       </div>
+    </div>
+    <div v-if="!oreTypeCheck(ores).length" class="panel panel-default text-center m-b">
+      <div class="panel-body">
+        No ores mined yet.
+      </div>
+    </div>
+    <table class="table custom-table" v-if="oreTypeCheck(ores).length">
+      <thead>
+      <tr>
+        <th style="width: 20%;">Ore</th>
+        <th style="width: 20%;">Count</th>
+        <th style="width: 20%;">Volume</th>
+      </tr>
+      </thead>
+      <!-- <tbody v-for="(oreType, oreVariants) in ores"> -->
+      <tbody v-for="oreType in oreTypeCheck(ores)">
+      <tr>
+        <td style="border-bottom: 2px solid white!important;">{{ summaryType(oreType) }}</td>
+        <td style="border-bottom: 2px solid white!important;">{{ summaryCount(oreType) | number }}</td>
+        <td style="border-bottom: 2px solid white!important;">{{ summaryVolume(oreType,
+          summaryCount(oreType))}}&nbsp;m<sup>3</sup></td>
+      </tr>
+      <!-- <tr v-for="(oreVariant, variantData) in ores[oreType]"> -->
+      <tr v-for="oreVariant in oreVariantCheck(oreType)">
+        <td style="text-align: right;">{{ oreVariant }}</td>
+        <td>{{ variantCount(oreType, oreVariant) | number }}</td>
+        <td>{{ variantVolume(oreType, oreVariant) }}&nbsp;m<sup>3</sup></td>
+      </tr>
+      </tbody>
+    </table>
 
     <div class="text-center">
       Created by <a href="https://gate.eveonline.com/Profile/Marumis%20Wuif" target="_blank">Marumis Wuif</a><br/>
@@ -236,12 +247,13 @@
     </div>
   </div>
 
-  <div class="modal fade" id="ships-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal fade" id="ships-modal" tabindex="-1" role="dialog" aria-labelledby="my-modal-label-ships">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title"><i class="fa fa-fw fa-paper-plane"></i> My Ships</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                  aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="my-model-label-ships"><i class="fa fa-fw fa-paper-plane"></i> My Ships</h4>
         </div>
         <div class="modal-body">
           <table class="table table-striped">
@@ -259,16 +271,20 @@
             <tbody>
             <tr v-for="ship in ships">
               <th>
-                <input type="text" v-model="ship.name" v-on:change="saveShips" class="form-control input-sm" placeholder="Ship Name" v-bind:class="{error: ship.name === ''}">
+                <input type="text" v-model="ship.name" v-on:change="saveShips" class="form-control input-sm"
+                       placeholder="Ship Name" v-bind:class="{error: ship.name === ''}">
               </th>
               <td>
-                <input type="text" v-model="ship.cargo" v-on:change="saveShips" class="form-control input-sm" placeholder="Cargo Size" v-bind:class="{error: ship.cargo === 0}">
+                <input type="text" v-model="ship.cargo" v-on:change="saveShips" class="form-control input-sm"
+                       placeholder="Cargo Size" v-bind:class="{error: ship.cargo === 0}">
               </td>
               <td>
-                <input type="text" v-model="ship.yield_per_turret" v-on:change="saveShips" class="form-control input-sm" placeholder="Yield per Turret" v-bind:class="{error: ship.yield_per_turret === 0}">
+                <input type="text" v-model="ship.yield_per_turret" v-on:change="saveShips" class="form-control input-sm"
+                       placeholder="Yield per Turret" v-bind:class="{error: ship.yield_per_turret === 0}">
               </td>
               <td>
-                <input type="text" v-model="ship.circle_time" v-on:change="saveShips" class="form-control input-sm" placeholder="Turret Circle Time" v-bind:class="{error: ship.circle_time === 0}">
+                <input type="text" v-model="ship.circle_time" v-on:change="saveShips" class="form-control input-sm"
+                       placeholder="Turret Circle Time" v-bind:class="{error: ship.circle_time === 0}">
               </td>
               <td>
                 <select class="form-control input-sm" v-model="ship.turrets" v-on:change="saveShips">
@@ -306,21 +322,22 @@
     </div>
   </div>
 
-  <div class="modal fade" id="settings-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal fade" id="settings-modal" tabindex="-1" role="dialog" aria-labelledby="my-modal-label-settings">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
-          <h4 class="modal-title" id="myModalLabel">
+          <h4 class="modal-title" id="my-modal-label-settings">
             <i class="fa fa-fw fa-cogs"></i> Settings
           </h4>
         </div>
         <div class="modal-body">
           <div class="form-group">
             <label for="warning-limit">Waring Cargo Limit in %</label>
-            <input type="text" v-model="settings.cargo_limit" v-on:change="saveSettings" class="form-control" id="warning-limit" placeholder="Waring Cargo Limit">
+            <input type="text" v-model="settings.cargo_limit" v-on:change="saveSettings" class="form-control"
+                   id="warning-limit" placeholder="Waring Cargo Limit">
           </div>
           <b>Task finished Sound</b>
           <div class="radio" v-for="(key, value) in sounds">
@@ -345,89 +362,108 @@
     </div>
   </div>
 
-  <div class="modal fade" id="refinery-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-            <h4 class="modal-title" id="myModalLabel">
-              <i class="fa fa-fw fa-cogs"></i>Reprocessing ~ {{ reprocessingYield }}%
-            </h4>
-          </div>
-          <div class="modal-body">
-            <div class="form-group">
-              <b>Reprocessing Yield</b>
-              <div class="radio">
-                <label>
-                  <input type="radio" v-bind:value="false" v-on:change="saveRefinery" v-model="refinery.reprocessingType">Custom / Flatrate
-                </label>
-              </div>
-              <div class="radio">
-                <label>
-                  <input type="radio" v-bind:value="true" v-on:change="saveRefinery" v-model="refinery.reprocessingType">Calculated
-                </label>
-              </div>
+  <div class="modal fade" id="refinery-modal" tabindex="-1" role="dialog" aria-labelledby="my-modal-label-reprocessing">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="my-modal-label-reprocessing">
+            <i class="fa fa-fw fa-cogs"></i>Reprocessing ~ {{ reprocessingYield }}%
+          </h4>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <b>Reprocessing Yield</b>
+            <div class="radio">
+              <label>
+                <input type="radio" v-bind:value="false" v-on:change="saveRefinery" v-model="refinery.reprocessingType">
+                Custom / Flatrate
+              </label>
             </div>
-            <div class="form-group" v-if="!refinery.reprocessingType">
-              <label for="flatrate-yield">Flatrate reprocessing yield in %</label>
-              <input type="text" v-on:change="saveRefinery" v-model="refinery.reprocessingFlat" class="form-control" id="flatrate-yield" placeholder="50">
-            </div>
-            <div class="form-group" v-if="refinery.reprocessingType">
-              <b>Station & Skills</b>
-              <div class="radio">
-                <span>Station Efficiency: </span>
-                <select v-on:change="saveRefinery" v-model="refinery.reprocessingStation">
-                  <option v-bind:value=25>25%</option>
-                  <option v-bind:value=30>30%</option>
-                  <option v-bind:value=32>32%</option>
-                  <option v-bind:value=35>35%</option>
-                  <option v-bind:value=40>40%</option>
-                  <option v-bind:value=50>50%</option>
-                </select>
-              </div>
-              <div class="radio">
-                <span>Reprocessing skill: </span>
-                <select v-on:change="saveRefinery" v-model="refinery.skillProcessing">
-                  <option v-for="n in 6" v-bind:value="n">{{n}}</option>
-                </select>
-              </div>
-              <div class="radio">
-                <span>Reprocessing Efficiency skill: </span>
-                <select v-on:change="saveRefinery" v-model="refinery.skillProcessingEfficiency">
-                  <option v-for="n in 6" v-bind:value="n">{{n}}</option>
-                </select>
-              </div>
-              <div class="radio">
-                <span>Zainou 'Beancounter' implant: </span>
-                <select v-on:change="saveRefinery" v-model="refinery.skillImplant">
-                  <option v-bind:value=0>0% - None</option>
-                  <option v-bind:value=1>1% - RX-801</option>
-                  <option v-bind:value=2>2% - RX-802</option>
-                  <option v-bind:value=4>4% - RX-804</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group" v-if="refinery.reprocessingType">
-              <b>Reprocessing Ores</b>
-              <br>
-              <small>These will be used for actual yield calculations,
-                <br>the approximation above shows reprocessing at X Ore IV</small>
-              <div class="radio" v-for="(key, value) in refinery.skillOres">
-                <select v-on:change="saveRefinery" v-model="refinery.skillOres[key]">
-                  <option v-for="n in 6" v-bind:value="n">{{n}}</option>
-                </select>
-                <span> {{key}}</span>
-              </div>
+            <div class="radio">
+              <label>
+                <input type="radio" v-bind:value="true" v-on:change="saveRefinery" v-model="refinery.reprocessingType">
+                Calculated
+              </label>
             </div>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <div class="form-group" v-if="!refinery.reprocessingType">
+            <label for="flatrate-yield">Flatrate reprocessing yield in %</label>
+            <input type="number" v-on:change="saveRefinery" v-model="refinery.reprocessingFlat" class="form-control"
+                   id="flatrate-yield" placeholder="50">
           </div>
+          <div class="form-group" v-if="refinery.reprocessingType">
+            <b>Station & Skills</b>
+            <table class="settings-table">
+              <tr>
+                <th width="70%">Station Efficiency</th>
+                <td width="30%">
+                  <select v-on:change="saveRefinery" v-model="refinery.reprocessingStation" class="form-control">
+                    <option v-bind:value=25>25%</option>
+                    <option v-bind:value=30>30%</option>
+                    <option v-bind:value=32>32%</option>
+                    <option v-bind:value=35>35%</option>
+                    <option v-bind:value=40>40%</option>
+                    <option v-bind:value=50>50%</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <th>Reprocessing Skill</th>
+                <td>
+                  <select v-on:change="saveRefinery" v-model="refinery.skillProcessing" class="form-control">
+                    <option v-for="n in 6" v-bind:value="n">{{n}}</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <th>Reprocessing Efficiency Skill</th>
+                <td>
+                  <select v-on:change="saveRefinery" v-model="refinery.skillProcessingEfficiency" class="form-control">
+                    <option v-for="n in 6" v-bind:value="n">{{n}}</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <th>Zainou 'Beancounter' Implant</th>
+                <td>
+                  <select v-on:change="saveRefinery" v-model="refinery.skillImplant" class="form-control">
+                    <option v-bind:value=0>0% - None</option>
+                    <option v-bind:value=1>1% - RX-801</option>
+                    <option v-bind:value=2>2% - RX-802</option>
+                    <option v-bind:value=4>4% - RX-804</option>
+                  </select>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="form-group" v-if="refinery.reprocessingType">
+            <b>Reprocessing Ores</b>
+            <br>
+            <small>
+              These will be used for actual yield calculations,<br/>
+              the approximation above shows reprocessing at Ore Skill Level 4
+            </small>
+            <table class="settings-table">
+              <tr v-for="(key, value) in refinery.skillOres">
+                <th width="70%" class="text-capitalize">{{key}}</th>
+                <td width="30%">
+                  <select v-on:change="saveRefinery" v-model="refinery.skillOres[key]" class="form-control">
+                    <option v-for="n in 6" v-bind:value="n">{{n}}</option>
+                  </select>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         </div>
       </div>
     </div>
+  </div>
 
   <div id="app-audio-holder"></div>
 </div>
