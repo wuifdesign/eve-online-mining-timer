@@ -89,6 +89,19 @@
     return Math.round(value).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   });
 
+  Vue.filter('numberHuman', function (value) {
+    var suffix = ''
+    var display = value;
+    if(value >= 1000000) {
+      display = (value / 1000000).toFixed(2);
+      suffix = 'M';
+    } else if(value >= 100000) {
+      display = (value / 1000).toFixed(2);
+      suffix = 'K';
+    }
+    return display.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + " " + suffix;
+  });
+
   Vue.filter('toFixed', function (value) {
     var data = Math.round(value * 100).toString();
     var number = data.substr(0, data.length - 2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -275,6 +288,16 @@
           "megacyte": 0,
           "morphite": 0
         },
+        gather: {
+          "tritanium": 0,
+          "pyerite": 0,
+          "mexallon": 0,
+          "isogen": 0,
+          "nocxium": 0,
+          "zydrine": 0,
+          "megacyte": 0,
+          "morphite": 0
+        },
         refinery: {
           reprocessingYield: 0.5,
           reprocessingType: true,
@@ -322,6 +345,11 @@
         var refinery = localStorage.getItem('refinery');
         if (refinery !== null) {
           this.refinery = JSON.parse(refinery);
+        }
+
+        var gather = localStorage.getItem('gather');
+        if (gather !== null) {
+          this.gather = JSON.parse(gather);
         }
       },
       watch: {
@@ -422,6 +450,9 @@
         },
         saveRefinery: function () {
           localStorage.setItem('refinery', JSON.stringify(this.refinery));
+        },
+        saveGather: function () {
+          localStorage.setItem('gather', JSON.stringify(this.gather));
         },
         addEmptyShip: function () {
           this.ships.push({
@@ -576,6 +607,17 @@
             return 0;
           } else {
             return Math.round(oreCount * oreSize * 100) / 100;
+          }
+        },
+        gatheringLeft: function(mineralName) {
+          var mineralHave = this.refine[mineralName];
+          var mineralNeed = parseInt(this.gather[mineralName],10);
+          var mineralLeft = (mineralNeed - mineralHave);
+
+          if (isNaN(mineralLeft) || mineralLeft < 0) {
+            return 0;
+          } else {
+            return mineralLeft;
           }
         },
         parseScannerData: function () {
