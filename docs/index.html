@@ -91,6 +91,9 @@
       <tr>
         <td v-for="mineral in refine">{{mineral | number}}</td>
       </tr>
+      <tr>
+        <td v-for="(mineral, value) in gather">{{ gatheringLeft(mineral) | numberHuman }}</td>
+      </tr>
       </tbody>
     </table>
 
@@ -168,7 +171,10 @@
           <i class="fa fa-fw fa-cogs"></i> Edit Settings
         </button>
         <button class="btn btn-primary btn-border" data-toggle="modal" data-target="#refinery-modal">
-          <i class="fa fa-fw fa-user"></i> Edit Refinery
+          <i class="fa fa-fw fa-industry"></i> Edit Refinery
+        </button>
+        <button class="btn btn-primary btn-border" data-toggle="modal" data-target="#gather-modal">
+          <i class="fa fa-fw fa-diamond"></i> Edit Gathering
         </button>
       </div>
       <div class="col-sm-6 text-right">
@@ -370,7 +376,7 @@
             <span aria-hidden="true">&times;</span>
           </button>
           <h4 class="modal-title" id="my-modal-label-reprocessing">
-            <i class="fa fa-fw fa-cogs"></i>Reprocessing ~ {{ reprocessingYield }}%
+            <i class="fa fa-fw fa-industry"></i>Reprocessing ~ {{ reprocessingYield }}%
           </h4>
         </div>
         <div class="modal-body">
@@ -453,6 +459,39 @@
                   <select v-on:change="saveRefinery" v-model="refinery.skillOres[key]" class="form-control">
                     <option v-for="n in 6" v-bind:value="n">{{n}}</option>
                   </select>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="gather-modal" tabindex="-1" role="dialog" aria-labelledby="my-modal-label-gathering">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="my-modal-label-gathering">
+            <i class="fa fa-fw fa-diamond"></i>Gathering
+          </h4>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <b>Minerals Needed</b>
+            <br>
+            <table class="settings-table">
+              <tr v-for="(key, value) in gather">
+                <th width="50%" class="text-capitalize">{{key}}</th>
+                <td width="50%">
+                  <input type="number" v-on:change="saveGather" v-model="gather[key]" class="form-control"
+                     id="gather-{{key}}" placeholder="0">
                 </td>
               </tr>
             </table>
