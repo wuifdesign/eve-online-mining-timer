@@ -90,7 +90,9 @@ export const startTimerInterval = (ship: ShipType) => {
         row.oreAmount -= amount
         if (row.oreAmount <= 0) {
           row.running = false
-          new Audio(sound1).play()
+          new Audio(sound1).play().then(() => {
+            // sound is playing
+          })
         }
         currentCargo += amount * oreSize
       }
@@ -98,7 +100,9 @@ export const startTimerInterval = (ship: ShipType) => {
     if (shouldUpdate) {
       if (!cargoAlertPlayed && currentCargo > ship.cargoSize * 0.95) {
         cargoAlertPlayed = true
-        new Audio(sound2).play()
+        new Audio(sound2).play().then(() => {
+          // sound is playing
+        })
       }
       useGlobalStore.getState().setCurrentCargo(currentCargo)
       useGlobalStore.getState().setOreRows(rows)
