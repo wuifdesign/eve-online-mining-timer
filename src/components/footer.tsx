@@ -8,7 +8,7 @@ export const Footer: React.FC = () => {
         Tool created by <b>Marumis Wuif</b>
       </Text>
       <Text c="dimmed" size="sm">
-        Feel free to send me questions, suggestions or donations of ISK.
+        Feel free to send me questions, suggestions or donations of ISK in game.
       </Text>
     </Box>
   )
