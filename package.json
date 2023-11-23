@@ -1,32 +1,47 @@
 {
+  "name": "eve-online-mining-timer",
   "private": true,
-  "devDependencies": {
-    "bootstrap-sass": "^3.4.1",
-    "css-margin-padding": "https://github.com/wuifdesign/css-margin-padding.git",
-    "font-awesome": "^4.7.0",
-    "gulp": "^4.0.2",
-    "gulp-buffer": "^0.0.2",
-    "gulp-clean-css": "^4.3.0",
-    "gulp-concat": "^2.6.1",
-    "gulp-cssimport": "^7.0.0",
-    "gulp-imagemin": "^7.1.0",
-    "gulp-load-plugins": "^2.0.3",
-    "gulp-rename": "^2.0.0",
-    "gulp-sass": "^4.1.0",
-    "gulp-sourcemaps": "^2.6.5",
-    "gulp-uglify": "^3.0.2",
-    "gulp-util": "^3.0.8",
-    "gulp.spritesmith": "^6.11.0",
-    "jquery": "^3.5.1",
-    "live-server": "^1.2.1",
-    "vue": "^1.0.28"
-  },
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "dev-server": "cd ./docs && live-server",
-    "gulp-copy-files": "gulp copy-files",
-    "gulp-sass": "gulp sass",
-    "gulp-js": "gulp js",
-    "gulp-js-vendor": "gulp js-vendor",
-    "gulp-watch": "gulp watch"
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "lint:typecheck": "tsc --noEmit",
+    "test": "vitest",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@mantine/core": "^7.2.2",
+    "@mantine/hooks": "^7.2.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-icons": "^4.12.0",
+    "uuid": "^9.0.1",
+    "zustand": "^4.4.6"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.38",
+    "@types/react-dom": "^18.2.17",
+    "@types/uuid": "^9.0.7",
+    "@typescript-eslint/eslint-plugin": "^6.12.0",
+    "@typescript-eslint/parser": "^6.12.0",
+    "@vitejs/plugin-react-swc": "^3.5.0",
+    "eslint": "^8.54.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-prettier": "^5.0.1",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.4",
+    "sass": "^1.69.5",
+    "typescript": "5.2.2",
+    "vite": "^5.0.2",
+    "vite-plugin-eslint": "^1.8.1",
+    "vitest": "^0.34.6"
+  },
+  "volta": {
+    "node": "20.9.0"
   }
 }

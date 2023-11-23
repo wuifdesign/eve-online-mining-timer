@@ -2,43 +2,43 @@
 
 ## Status
 
-* [![release-version](https://img.shields.io/badge/v0.0.1-Live-success.svg)](https://wuifdesign.github.io/eve-online-mining-timer)
+[![release-version](https://img.shields.io/badge/v0.0.1-Live-success.svg)](https://wuifdesign.github.io/eve-online-mining-timer)
 
-Keep track of your mining lasers and strip miners to optimize your yield.
+Monitor your mining lasers and strip miners to enhance your yield efficiency.
 
-Keep track of how much you're ore yields, share with corp or friends
+Keep a record of your ore yields, and share the information with your corporation or friends.
 
-View estimated mineral gains based on actual ore mined and skills
+Utilize a feature to estimate mineral gains, considering actual ore mined and your skills.
 
-Know exactly how much you still need to build that titan
+Stay informed about the exact amount required to construct that titan.
 
-##### Never run empty mining circles again.
+# React + TypeScript + Vite
 
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## Required / Recommended Modules
+Currently, two official plugins are available:
 
-* [![node-js](https://img.shields.io/badge/nodejs-v12.16.3-brightgreen.svg?style=flat-square)](https://nodejs.org/en/)
-* [![npm](https://img.shields.io/badge/npm-v6.14.5-brightgreen.svg?style=flat-square)](https://nodejs.org/en/)
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Development Setup
+## Expanding the ESLint configuration
 
-To get setup git clone the project and run npm
+If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
 
+- Configure the top-level `parserOptions` property like this:
+
+```js
+export default {
+  // other rules...
+  parserOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    project: ['./tsconfig.json', './tsconfig.node.json'],
+    tsconfigRootDir: __dirname,
+  },
+}
 ```
-npm install
-```
 
-Open your code editor of choice the parent directory of the project
-```
-code .
-```
-
-To watch the project folder for changes
-```
-npm run gulp-watch
-```
-
-To view live changes run a [live-server](https://www.npmjs.com/package/live-server) on the compiled source
-```
-npm run dev-server
-```
+- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
+- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
+- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list

@@ -61,3 +61,9 @@ Prime Arkonor	100	1600 m3	1,234 m
 Mercoxit	100	4000 m3	1,234 m
 Magma Mercoxit	100	4000 m3	1,234 m
 Vitreous Mercoxit	100	4000 m3	1,234 m
+
+Ducinium	2 073	33 168 m3	7 257 m
+Eifyrium	2 040	32 640 m3	8 797 m
+Ytirium	5 124	3 074 m3	5 082 m
+Ytirium	11 079	6 647 m3	10 km
+Ytirium	8 865	5 319 m3	14 km
