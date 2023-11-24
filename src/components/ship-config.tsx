@@ -13,9 +13,9 @@ export const ShipConfig: React.FC = () => {
 
   return (
     <Box my="md" p="md" bg="dark.5">
-      <SimpleGrid cols={4}>
+      <SimpleGrid cols={{ base: 2, sm: 4 }}>
         <NumberInput
-          label="Yield per turret"
+          label="Yield/turret"
           required
           value={ship.yieldPerTurret}
           thousandSeparator=","
@@ -25,7 +25,7 @@ export const ShipConfig: React.FC = () => {
           }}
         />
         <NumberInput
-          label="Turret circle duration"
+          label="Circle duration"
           required
           value={ship.turretCircleDuration}
           thousandSeparator=","

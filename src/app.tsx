@@ -1,6 +1,7 @@
 import * as React from 'react'
-import { Container, createTheme, MantineProvider, Text } from '@mantine/core'
+import { Box, Button, Container, createTheme, MantineProvider, Text } from '@mantine/core'
 import { useEffect } from 'react'
+import { TbTrash } from 'react-icons/tb'
 import { Header } from './components/header.tsx'
 import { useShipStore } from './utils/use-ship-store.ts'
 import { CargoInfo } from './components/cargo-info.tsx'
@@ -16,7 +17,7 @@ const theme = createTheme({})
 
 export const App: React.FC = () => {
   const { ship } = useShipStore()
-  const { oreRows, addOreRows } = useOreRows()
+  const { oreRows, addOreRows, deleteEmptyOreRows } = useOreRows()
 
   useEffect(() => {
     startTimerInterval(ship)
@@ -45,6 +46,19 @@ export const App: React.FC = () => {
             </Text>
           )}
         </div>
+        {oreRows.length > 0 && (
+          <Box mt="xs" ta="right">
+            <Button
+              leftSection={<TbTrash />}
+              size="compact-xs"
+              color="red"
+              variant="outline"
+              onClick={() => deleteEmptyOreRows()}
+            >
+              Delete rows where there is no remaining ore
+            </Button>
+          </Box>
+        )}
         <ScannerResultPasteInput
           onPaste={(data) => {
             addOreRows(

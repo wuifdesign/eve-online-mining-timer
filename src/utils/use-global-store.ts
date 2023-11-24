@@ -20,6 +20,7 @@ type GlobalStoreType = {
   addOreRows: (rows: GlobalStoreRowType[]) => void
   updateOreRow: (id: string, row: Partial<GlobalStoreRowType>) => void
   deleteOreRow: (id: string) => void
+  deleteEmptyOreRows: () => void
 }
 
 let cargoAlertPlayed = false
@@ -37,24 +38,24 @@ const useGlobalStore = create<GlobalStoreType>((set) => ({
   addOreRows: (oreRows) => set((state) => ({ oreRows: [...state.oreRows, ...oreRows] })),
   updateOreRow: (id, row) =>
     set((state) => {
-      const otherRows = state.oreRows.filter((item) => item.id !== id)
-      const stateRow = state.oreRows.find((item) => item.id === id)
-      if (!stateRow) {
-        return state
+      const oreRows = [...state.oreRows]
+      const rowIndex = oreRows.findIndex((item) => item.id === id)
+      if (rowIndex > -1) {
+        oreRows[rowIndex] = {
+          ...oreRows[rowIndex],
+          ...row,
+        }
       }
-      return {
-        oreRows: [
-          ...otherRows,
-          {
-            ...stateRow,
-            ...row,
-          },
-        ],
-      }
+      console.log(oreRows)
+      return { oreRows }
     }),
   deleteOreRow: (id) =>
     set((state) => ({
       oreRows: state.oreRows.filter((item) => item.id !== id),
+    })),
+  deleteEmptyOreRows: () =>
+    set((state) => ({
+      oreRows: state.oreRows.filter((item) => item.oreAmount > 0),
     })),
 }))
 
@@ -71,6 +72,7 @@ export const useOreRows = () => {
     addOreRows: state.addOreRows,
     updateOreRow: state.updateOreRow,
     deleteOreRow: state.deleteOreRow,
+    deleteEmptyOreRows: state.deleteEmptyOreRows,
   }))
 }
 

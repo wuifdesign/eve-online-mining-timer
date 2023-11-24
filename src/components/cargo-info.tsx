@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Box, Button, Group, MantineColor, Text } from '@mantine/core'
+import { Box, Button, Grid, MantineColor, Text } from '@mantine/core'
 import { TbCircleMinus } from 'react-icons/tb'
 import { useCurrentCargo } from '../utils/use-global-store.ts'
 import { ShipType } from '../utils/use-ship-store.ts'
@@ -21,16 +21,8 @@ export const CargoInfo: React.FC<CargoInfoProps> = ({ ship }) => {
 
   return (
     <Box my="md" p="md" bg="dark.5">
-      <Group justify="space-between">
-        <Box>
-          <Button leftSection={<TbCircleMinus />} color="orange" variant="outline" onClick={() => resetCurrentCargo()}>
-            Empty Cargo
-          </Button>
-          <Text mt={4} c="dimmed" fz="sm">
-            Empty your cargo upon jetting into space or unloading at a station.
-          </Text>
-        </Box>
-        <Box ta="right">
+      <Grid justify="space-between">
+        <Grid.Col span={{ base: 12, md: 6 }} ta={{ base: 'center', md: 'right' }} order={{ base: 1, md: 2 }}>
           <Text>Cargo used</Text>
           <Text size="lg" fw="bold" ff="monospace" c={color}>
             <Number value={currentCargo} maximumFractionDigits={0} /> m³
@@ -38,8 +30,16 @@ export const CargoInfo: React.FC<CargoInfoProps> = ({ ship }) => {
           <Text fz="xs" mt={-7} fw="bold" ff="monospace" c="dimmed">
             of <Number value={ship.cargoSize} /> m³
           </Text>
-        </Box>
-      </Group>
+        </Grid.Col>
+        <Grid.Col span={{ base: 12, md: 6 }} ta={{ base: 'center', md: 'left' }} order={{ base: 2, md: 1 }}>
+          <Button leftSection={<TbCircleMinus />} color="orange" variant="outline" onClick={() => resetCurrentCargo()}>
+            Empty Cargo
+          </Button>
+          <Text mt={4} c="dimmed" fz="sm">
+            Empty your cargo upon jetting into space or unloading at a station.
+          </Text>
+        </Grid.Col>
+      </Grid>
     </Box>
   )
 }

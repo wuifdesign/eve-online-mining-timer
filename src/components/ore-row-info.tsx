@@ -4,6 +4,7 @@ import { Grid } from '@mantine/core'
 export const OreRowInfo: React.FC = () => {
   return (
     <Grid
+      visibleFrom="sm"
       align="center"
       columns={25}
       gutter="xs"
@@ -20,13 +21,13 @@ export const OreRowInfo: React.FC = () => {
       <Grid.Col span={3} ta="center">
         Ore count
       </Grid.Col>
-      <Grid.Col span={3} ta="right" visibleFrom="md">
+      <Grid.Col span={3} ta="right">
         Ore size
       </Grid.Col>
       <Grid.Col span={2} ta="center">
         Turrets
       </Grid.Col>
-      <Grid.Col span={2} ta="center" visibleFrom="md">
+      <Grid.Col span={2} ta="center">
         Circles
       </Grid.Col>
       <Grid.Col span={2} ta="center">

@@ -41,10 +41,10 @@ export const OreRow: React.FC<OreRowProps> = ({ index, ship, data }) => {
 
   return (
     <Grid align="center" columns={25} gutter="xs" py={5} px={6} bg={index % 2 !== 0 ? 'dark.6' : undefined}>
-      <Grid.Col span={6}>
+      <Grid.Col visibleFrom="sm" span={6}>
         <TextInput required size="xs" defaultValue={data.name} />
       </Grid.Col>
-      <Grid.Col span={4}>
+      <Grid.Col span={{ base: 8, sm: 4 }}>
         <Select
           size="xs"
           searchable
@@ -56,7 +56,7 @@ export const OreRow: React.FC<OreRowProps> = ({ index, ship, data }) => {
           value={data.oreType}
         />
       </Grid.Col>
-      <Grid.Col span={3}>
+      <Grid.Col span={{ base: 7, sm: 3 }}>
         <NumberInput
           required
           size="xs"
@@ -65,14 +65,14 @@ export const OreRow: React.FC<OreRowProps> = ({ index, ship, data }) => {
           allowNegative={false}
           value={data.oreAmount}
           onChange={(oreAmount) => {
-            updateOreRow(data.id, { oreAmount: parseInt(oreAmount as any) })
+            updateOreRow(data.id, { oreAmount: parseInt((oreAmount || 0) as any) })
           }}
         />
       </Grid.Col>
-      <Grid.Col span={3} ff="monospace" fz="xs" ta="right" style={{ whiteSpace: 'nowrap' }}>
+      <Grid.Col span={3} visibleFrom="sm" ff="monospace" fz="xs" ta="right" style={{ whiteSpace: 'nowrap' }}>
         <Number maximumFractionDigits={0} value={oreSize} /> m³
       </Grid.Col>
-      <Grid.Col span={2}>
+      <Grid.Col span={{ base: 4, sm: 2 }}>
         <Select
           required
           size="xs"
@@ -81,22 +81,26 @@ export const OreRow: React.FC<OreRowProps> = ({ index, ship, data }) => {
           value={data.turrets.toString()}
         />
       </Grid.Col>
-      <Grid.Col span={2} ff="monospace" fz="xs" ta="center">
+      <Grid.Col span={2} visibleFrom="sm" ff="monospace" fz="xs" ta="center">
         <Number maximumFractionDigits={2} value={circles} />
       </Grid.Col>
-      <Grid.Col span={2} ff="monospace" fz="sm" fw="bold" ta="center">
+      <Grid.Col span={2} visibleFrom="sm" ff="monospace" fz="sm" fw="bold" ta="center">
         {secToTime(durations)}
       </Grid.Col>
-      <Grid.Col span={3} ff="monospace" fz="sm">
+      <Grid.Col span={{ base: 6, sm: 3 }} ff="monospace" fz="sm">
         <Group gap="xs" justify="flex-end">
-          {data.running ? (
-            <ActionIcon color="yellow" onClick={() => updateOreRow(data.id, { running: false })} title="Pause">
-              <TbPlayerPause />
-            </ActionIcon>
-          ) : (
-            <ActionIcon color="green" onClick={() => updateOreRow(data.id, { running: true })} title="Play">
-              <TbPlayerPlay />
-            </ActionIcon>
+          {data.oreAmount > 0 && (
+            <>
+              {data.running ? (
+                <ActionIcon color="yellow" onClick={() => updateOreRow(data.id, { running: false })} title="Pause">
+                  <TbPlayerPause />
+                </ActionIcon>
+              ) : (
+                <ActionIcon color="green" onClick={() => updateOreRow(data.id, { running: true })} title="Play">
+                  <TbPlayerPlay />
+                </ActionIcon>
+              )}
+            </>
           )}
           <ActionIcon color="red" onClick={() => deleteOreRow(data.id)} title="Delete Row">
             <TbTrash />
