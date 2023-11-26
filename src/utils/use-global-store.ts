@@ -76,17 +76,29 @@ export const useOreRows = () => {
   }))
 }
 
+const getCurrentSeconds = () => {
+  return Math.round(Date.now() / 1000)
+}
+
 let secInterval: NodeJS.Timeout
+let lastTickSeconds: number
 export const startTimerInterval = (ship: ShipType) => {
+  lastTickSeconds = getCurrentSeconds()
   secInterval = setInterval(() => {
+    const secondsPassed = getCurrentSeconds() - lastTickSeconds
+    if (secondsPassed === 0) {
+      return
+    }
+    lastTickSeconds = getCurrentSeconds()
     const yieldPerTurret = ship.yieldPerTurret / ship.turretCircleDuration
+    const yieldAllSeconds = yieldPerTurret * secondsPassed
     const rows = useGlobalStore.getState().oreRows
     let currentCargo = useGlobalStore.getState().currentCargo
     let shouldUpdate = false
     for (const row of rows) {
       if (row.running) {
         shouldUpdate = true
-        const rowYield = yieldPerTurret * row.turrets
+        const rowYield = yieldAllSeconds * row.turrets
         const oreSize = oreSizes[row.oreType]
         const amount = Math.min(rowYield / oreSize, row.oreAmount)
         row.oreAmount -= amount
