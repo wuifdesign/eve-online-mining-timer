@@ -13,8 +13,10 @@ export type GlobalStoreRowType = ScannerResultType & {
 
 type GlobalStoreType = {
   currentCargo: number
+  compressedCargo: number
   setCurrentCargo: (cargo: number) => void
   resetCurrentCargo: () => void
+  compressCurrentCargo: () => void
   oreRows: GlobalStoreRowType[]
   setOreRows: (rows: GlobalStoreRowType[]) => void
   addOreRows: (rows: GlobalStoreRowType[]) => void
@@ -27,11 +29,17 @@ let cargoAlertPlayed = false
 
 const useGlobalStore = create<GlobalStoreType>((set) => ({
   currentCargo: 0,
+  compressedCargo: 0,
   setCurrentCargo: (cargo) => set(() => ({ currentCargo: cargo })),
   resetCurrentCargo: () =>
     set(() => {
       cargoAlertPlayed = false
-      return { currentCargo: 0 }
+      return { currentCargo: 0, compressedCargo: 0 }
+    }),
+  compressCurrentCargo: () =>
+    set((state) => {
+      cargoAlertPlayed = false
+      return { compressedCargo: state.compressedCargo + state.currentCargo / 100, currentCargo: 0 }
     }),
   oreRows: [],
   setOreRows: (oreRows) => set(() => ({ oreRows })),
@@ -61,7 +69,11 @@ const useGlobalStore = create<GlobalStoreType>((set) => ({
 
 export const useCurrentCargo = () => {
   return useGlobalStore(
-    useShallow((state) => ({ currentCargo: state.currentCargo, resetCurrentCargo: state.resetCurrentCargo })),
+    useShallow((state) => ({
+      currentCargo: state.currentCargo + state.compressedCargo,
+      resetCurrentCargo: state.resetCurrentCargo,
+      compressCurrentCargo: state.compressCurrentCargo,
+    })),
   )
 }
 
@@ -94,6 +106,7 @@ export const startTimerInterval = (ship: ShipType) => {
     const yieldAllSeconds = yieldPerTurret * secondsPassed
     const rows = useGlobalStore.getState().oreRows
     let currentCargo = useGlobalStore.getState().currentCargo
+    const compressedCargo = useGlobalStore.getState().compressedCargo
     let shouldUpdate = false
     for (const row of rows) {
       if (row.running) {
@@ -112,7 +125,7 @@ export const startTimerInterval = (ship: ShipType) => {
       }
     }
     if (shouldUpdate) {
-      if (!cargoAlertPlayed && currentCargo > ship.cargoSize * 0.95) {
+      if (!cargoAlertPlayed && currentCargo + compressedCargo > ship.cargoSize * 0.95) {
         cargoAlertPlayed = true
         new Audio(sound2).play().then(() => {
           // sound is playing

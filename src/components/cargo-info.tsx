@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Box, Button, Grid, MantineColor, Text } from '@mantine/core'
-import { TbCircleMinus } from 'react-icons/tb'
+import { TbCircleMinus, TbResize } from 'react-icons/tb'
 import { useCurrentCargo } from '../utils/use-global-store.ts'
 import { ShipType } from '../utils/use-ship-store.ts'
 import { Number } from './number.tsx'
@@ -10,7 +10,7 @@ export type CargoInfoProps = {
 }
 
 export const CargoInfo: React.FC<CargoInfoProps> = ({ ship }) => {
-  const { currentCargo, resetCurrentCargo } = useCurrentCargo()
+  const { currentCargo, resetCurrentCargo, compressCurrentCargo } = useCurrentCargo()
 
   let color: MantineColor = 'green'
   if (currentCargo > ship.cargoSize * 0.95) {
@@ -35,8 +35,18 @@ export const CargoInfo: React.FC<CargoInfoProps> = ({ ship }) => {
           <Button leftSection={<TbCircleMinus />} color="orange" variant="outline" onClick={() => resetCurrentCargo()}>
             Empty Cargo
           </Button>
+          <Button
+            leftSection={<TbResize />}
+            ml={5}
+            color="orange"
+            variant="outline"
+            onClick={() => compressCurrentCargo()}
+          >
+            Compress Cargo
+          </Button>
           <Text mt={4} c="dimmed" fz="sm">
-            Empty your cargo upon jetting into space or unloading at a station.
+            Empty your cargo upon jetting into space or unloading at a station. Compress your cargo if you have an Orca
+            or Porpoise on your fleet you can reduce cargo size by x100
           </Text>
         </Grid.Col>
       </Grid>
