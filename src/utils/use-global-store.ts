@@ -54,7 +54,6 @@ const useGlobalStore = create<GlobalStoreType>((set) => ({
           ...row,
         }
       }
-      console.log(oreRows)
       return { oreRows }
     }),
   deleteOreRow: (id) =>
@@ -92,7 +91,7 @@ const getCurrentSeconds = () => {
   return Math.round(Date.now() / 1000)
 }
 
-let secInterval: NodeJS.Timeout
+let secInterval: any
 let lastTickSeconds: number
 export const startTimerInterval = (ship: ShipType) => {
   lastTickSeconds = getCurrentSeconds()
