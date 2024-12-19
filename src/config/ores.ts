@@ -23,6 +23,7 @@ export const oreSizes = {
   Talassonite: 16,
   Veldspar: 0.1,
   Ytirium: 0.6,
+  Kylixium: 1.2,
 
   // Mission Ores
   Augumene: 0.3,
