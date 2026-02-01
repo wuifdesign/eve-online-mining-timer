@@ -11,18 +11,20 @@ export type ScannerResultType = {
 }
 
 const stringToNumber = (value: string) => {
-  return parseInt(
-    value
-      .replace(/\u00a0/g, '')
-      .replace(' ', '')
-      .replace('.', '')
-      .replace(',', ''),
-  )
+  const cleaned = value.replace(/\u00a0/g, '').replace(/[^\d]/g, '')
+  return parseInt(cleaned || '0')
 }
 
 const getOreTypeFromName = (value: string): OreType => {
   if (!oreNames.includes(value)) {
-    const baseOre = oreNames.find((item) => item.includes(value))
+    let baseOre = oreNames.find((item) => value.includes(item))
+    if (!baseOre) {
+      const lastWord = value.trim().split(' ').slice(-1)[0]
+      const matches = oreNames.filter((item) => item.endsWith(` ${lastWord}`) || item === lastWord)
+      if (matches.length === 1) {
+        baseOre = matches[0]
+      }
+    }
     if (baseOre) {
       value = baseOre
     }
@@ -33,19 +35,25 @@ const getOreTypeFromName = (value: string): OreType => {
 export const parseScannerResult = (input: string) => {
   const output: ScannerResultType[] = []
   for (const row of input.split('\n')) {
-    const parts = row.split('\t')
-    if (parts.length != 4) {
+    if (!row.trim()) {
       continue
     }
-    const oreType = parts[0].split(' ').slice(-1)[0]
-    const mappedOreType = getOreTypeFromName(oreType)
+    let parts = row.split('\t').filter(Boolean)
+    if (parts.length < 4) {
+      parts = row.trim().split(/\s{2,}/)
+    }
+    if (parts.length < 4) {
+      continue
+    }
+    const oreName = parts[0].trim()
+    const mappedOreType = getOreTypeFromName(oreName)
     if (!oreNames.includes(mappedOreType)) {
       continue
     }
     output.push({
       id: uuidv4(),
-      name: `${parts[0]} - ${parts[3]}`.replace(/\u00a0/g, ' '),
-      distance: stringToNumber(parts[3]),
+      name: `${parts[0]} - ${parts[parts.length - 1]}`.replace(/\u00a0/g, ' '),
+      distance: stringToNumber(parts[parts.length - 1]),
       oreType: getOreTypeFromName(mappedOreType),
       oreAmount: stringToNumber(parts[1]),
     })

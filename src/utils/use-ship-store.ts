@@ -1,5 +1,4 @@
 import { useLocalStorage } from '@mantine/hooks'
-
 export type ShipType = {
   name: string
   cargoSize: number
@@ -7,6 +6,9 @@ export type ShipType = {
   turretCircleDuration: number
   numberOfTurrets: number
   splitTurrets: boolean
+  residueChancePercent: number
+  critChancePercent: number
+  critBonusYieldPercent: number
 }
 
 export const useShipStore = () => {
@@ -19,6 +21,9 @@ export const useShipStore = () => {
       turretCircleDuration: 180,
       numberOfTurrets: 2,
       splitTurrets: true,
+      residueChancePercent: 0,
+      critChancePercent: 1,
+      critBonusYieldPercent: 200,
     } as ShipType,
     getInitialValueInEffect: false,
   })

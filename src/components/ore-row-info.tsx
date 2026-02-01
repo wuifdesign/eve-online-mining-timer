@@ -6,7 +6,7 @@ export const OreRowInfo: React.FC = () => {
     <Grid
       visibleFrom="sm"
       align="center"
-      columns={25}
+      columns={33}
       gutter="xs"
       py={5}
       px={6}
@@ -14,8 +14,8 @@ export const OreRowInfo: React.FC = () => {
       fz="sm"
       style={{ whiteSpace: 'nowrap', borderBottom: '1px solid var(--mantine-color-dark-4)' }}
     >
-      <Grid.Col span={6}>Label</Grid.Col>
-      <Grid.Col span={4} ta="center">
+      <Grid.Col span={5}>Label</Grid.Col>
+      <Grid.Col span={3} ta="center">
         Ore
       </Grid.Col>
       <Grid.Col span={3} ta="center">
@@ -27,11 +27,17 @@ export const OreRowInfo: React.FC = () => {
       <Grid.Col span={2} ta="center">
         Turrets
       </Grid.Col>
-      <Grid.Col span={2} ta="center">
-        Circles
+      <Grid.Col span={4} ta="center">
+        Residue (P10/50/90)
       </Grid.Col>
-      <Grid.Col span={2} ta="center">
-        Time
+      <Grid.Col span={4} ta="center">
+        Crit bonus (P10/50/90)
+      </Grid.Col>
+      <Grid.Col span={3} ta="center">
+        Cycles (P10/50/90)
+      </Grid.Col>
+      <Grid.Col span={3} ta="center">
+        Time (P10/50/90)
       </Grid.Col>
     </Grid>
   )
