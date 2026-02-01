@@ -60,5 +60,7 @@ describe('mining-sim', () => {
     expect(bandsA.cargoFullTimeBands.p90).toBeCloseTo(bandsB.cargoFullTimeBands.p90, 6)
     expect(bandsA.cargoPerSecondBands.p10).toBeLessThanOrEqual(bandsA.cargoPerSecondBands.p50)
     expect(bandsA.cargoPerSecondBands.p50).toBeLessThanOrEqual(bandsA.cargoPerSecondBands.p90)
+    expect(bandsA.cargoFullTimeBands.p10).toBeLessThanOrEqual(bandsA.cargoFullTimeBands.p50)
+    expect(bandsA.cargoFullTimeBands.p50).toBeLessThanOrEqual(bandsA.cargoFullTimeBands.p90)
   })
 })

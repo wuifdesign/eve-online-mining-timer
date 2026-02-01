@@ -200,7 +200,15 @@ export const simulateCargoBands = (options: {
   const expectedCargoFullTime = expectedCargoPerSecond > 0 ? cargoSize / expectedCargoPerSecond : 0
 
   return {
-    cargoPerSecondBands: { ...cargoPerSecondBands, p50: expectedCargoPerSecond },
-    cargoFullTimeBands: { ...cargoFullTimeBands, p50: expectedCargoFullTime },
+    cargoPerSecondBands: {
+      p10: Math.min(cargoPerSecondBands.p10, expectedCargoPerSecond),
+      p50: expectedCargoPerSecond,
+      p90: Math.max(cargoPerSecondBands.p90, expectedCargoPerSecond),
+    },
+    cargoFullTimeBands: {
+      p10: Math.min(cargoFullTimeBands.p10, expectedCargoFullTime),
+      p50: expectedCargoFullTime,
+      p90: Math.max(cargoFullTimeBands.p90, expectedCargoFullTime),
+    },
   }
 }
