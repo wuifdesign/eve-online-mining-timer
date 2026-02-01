@@ -3,7 +3,7 @@ import { Anchor, Box, List, Text } from '@mantine/core'
 
 export const HowTo: React.FC = () => {
   return (
-    <Box my="md" p="md" bg="dark.5">
+    <Box my="lg" p="lg" bg="dark.5">
       <Text c="white" fw="bold">
         How to Use
       </Text>

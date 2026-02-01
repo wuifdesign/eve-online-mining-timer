@@ -59,11 +59,11 @@ export const OreRow: React.FC<OreRowProps> = ({ index, ship, data }) => {
   }
 
   return (
-    <Grid align="center" columns={45} gutter="xs" py={5} px={6} bg={index % 2 !== 0 ? 'dark.6' : undefined}>
-      <Grid.Col visibleFrom="sm" span={9}>
+    <Grid align="center" columns={45} gutter="xs" py={7} px={8} bg={index % 2 !== 0 ? 'dark.6' : undefined}>
+      <Grid.Col visibleFrom="sm" span={8}>
         <TextInput required size="xs" defaultValue={data.name} />
       </Grid.Col>
-      <Grid.Col span={{ base: 8, sm: 6 }}>
+      <Grid.Col span={{ base: 8, sm: 4 }}>
         <Select
           size="xs"
           searchable
@@ -103,13 +103,13 @@ export const OreRow: React.FC<OreRowProps> = ({ index, ship, data }) => {
       <Grid.Col span={3} visibleFrom="sm" ff="monospace" fz="xs" ta="center">
         {formatBand(bands.residueTotalBands, { maximumFractionDigits: 1 })}
       </Grid.Col>
-      <Grid.Col span={3} visibleFrom="sm" ff="monospace" fz="xs" ta="center">
+      <Grid.Col span={4} visibleFrom="sm" ff="monospace" fz="xs" ta="center">
         {formatBand(bands.critBonusTotalBands, { maximumFractionDigits: 1 })}
       </Grid.Col>
-      <Grid.Col span={3} visibleFrom="sm" ff="monospace" fz="xs" ta="center">
+      <Grid.Col span={4} visibleFrom="sm" ff="monospace" fz="xs" ta="center">
         {formatBand(bands.cyclesBands, { maximumFractionDigits: 2 })}
       </Grid.Col>
-      <Grid.Col span={5} visibleFrom="sm" ff="monospace" fz="xs" fw="bold" ta="center">
+      <Grid.Col span={7} visibleFrom="sm" ff="monospace" fz="xs" fw="bold" ta="center">
         {formatTimeBand(bands.timeBands)}
       </Grid.Col>
       <Grid.Col span={{ base: 6, sm: 4 }} ff="monospace" fz="sm">
