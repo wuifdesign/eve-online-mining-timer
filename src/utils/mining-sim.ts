@@ -58,6 +58,14 @@ const getBands = (values: number[], clampMin = 0): StatBands => {
   }
 }
 
+const clampBandsToAvg = (bands: StatBands, avg: number): StatBands => {
+  return {
+    low: Math.min(bands.low, avg),
+    avg,
+    high: Math.max(bands.high, avg),
+  }
+}
+
 type SimCycleResult = {
   residueVolume: number
   critBonusVolume: number
@@ -139,12 +147,12 @@ export const simulateMiningBands = (options: {
     cycleTotals.push(cycles)
   }
 
-  const residueTotalBands = getBands(residueTotals)
-  const critBonusTotalBands = getBands(critTotals)
-  const cyclesBands = getBands(cycleTotals)
   const deterministic = getDeterministicCycles({ oreAmount, oreUnitSize, stats, turrets })
   const expectedCritTotal = stats.expectedCritBonusPerCycle * turrets * deterministic.cycles
   const expectedResidueTotal = stats.expectedResiduePerCycle * turrets * deterministic.cycles
+  const residueTotalBands = clampBandsToAvg(getBands(residueTotals), expectedResidueTotal)
+  const critBonusTotalBands = clampBandsToAvg(getBands(critTotals), expectedCritTotal)
+  const cyclesBands = clampBandsToAvg(getBands(cycleTotals), deterministic.cycles)
   const timeBands = {
     low: cyclesBands.low * stats.cycleDuration,
     avg: deterministic.time,
@@ -152,10 +160,10 @@ export const simulateMiningBands = (options: {
   }
 
   return {
-    residueTotalBands: { ...residueTotalBands, avg: expectedResidueTotal },
-    critBonusTotalBands: { ...critBonusTotalBands, avg: expectedCritTotal },
-    cyclesBands: { ...cyclesBands, avg: deterministic.cycles },
-    timeBands,
+    residueTotalBands,
+    critBonusTotalBands,
+    cyclesBands,
+    timeBands: clampBandsToAvg(timeBands, deterministic.time),
     deterministicCycles: deterministic.cycles,
     deterministicTime: deterministic.time,
   }

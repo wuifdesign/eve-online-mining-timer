@@ -34,6 +34,8 @@ describe('mining-sim', () => {
     expect(bandsA.cyclesBands.low).toBeCloseTo(bandsB.cyclesBands.low, 6)
     expect(bandsA.cyclesBands.avg).toBeCloseTo(bandsB.cyclesBands.avg, 6)
     expect(bandsA.cyclesBands.high).toBeCloseTo(bandsB.cyclesBands.high, 6)
+    expect(bandsA.cyclesBands.low).toBeLessThanOrEqual(bandsA.cyclesBands.avg)
+    expect(bandsA.cyclesBands.avg).toBeLessThanOrEqual(bandsA.cyclesBands.high)
     expect(bandsA.timeBands.low).toBeLessThanOrEqual(bandsA.timeBands.avg)
     expect(bandsA.timeBands.avg).toBeLessThanOrEqual(bandsA.timeBands.high)
     expect(bandsA.timeBands.avg).toBeCloseTo(bandsA.deterministicTime, 6)
