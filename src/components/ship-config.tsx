@@ -1,14 +1,16 @@
 import * as React from 'react'
-import { Box, Button, Group, NumberInput, SimpleGrid, Text } from '@mantine/core'
-import { TbRepeat } from 'react-icons/tb'
+import { ActionIcon, Box, Button, Group, NumberInput, SimpleGrid, Text } from '@mantine/core'
+import { TbRepeat, TbVolume } from 'react-icons/tb'
 import { formatNumber } from '../utils/format-number/format-number.tsx'
 import { getMiningStats } from '../utils/mining-math.ts'
 import { simulateCargoBands } from '../utils/mining-sim.ts'
 import { useShipStore } from '../utils/use-ship-store.ts'
 import { secToTime } from '../utils/sec-to-time/sec-to-time.tsx'
+import { SoundSettingsModal } from './sound-settings-modal.tsx'
 
 export const ShipConfig: React.FC = () => {
   const { ship, setShip, resetShip } = useShipStore()
+  const [soundModalOpened, setSoundModalOpened] = React.useState(false)
   const stats = getMiningStats(ship)
 
   const cargoBands = React.useMemo(
@@ -30,6 +32,7 @@ export const ShipConfig: React.FC = () => {
 
   return (
     <Box my="lg" p="lg" bg="dark.5">
+      <SoundSettingsModal opened={soundModalOpened} onClose={() => setSoundModalOpened(false)} />
       <SimpleGrid cols={{ base: 2, sm: 4 }}>
         <NumberInput
           label="Yield/turret"
@@ -113,20 +116,32 @@ export const ShipConfig: React.FC = () => {
           Cargo/sec: {formatBand(cargoBands.cargoPerSecondBands, { maximumFractionDigits: 2 })} m³ | Cargo full in{' '}
           {formatTimeBand(cargoBands.cargoFullTimeBands)}{' '}
         </Text>
-        <div>
-          <Text fz="xs" c="dimmed" mb={4} ta="center">
-            Low/Avg/High = mean − 1σ / mean / mean + 1σ bands.
-          </Text>
-          <Button
-            size="compact-xs"
+        <Group gap="xs" align="flex-start">
+          <ActionIcon
             variant="outline"
-            color="orange"
-            onClick={() => resetShip()}
-            leftSection={<TbRepeat />}
+            color="gray"
+            size="lg"
+            mt={4}
+            onClick={() => setSoundModalOpened(true)}
+            title="Sound settings"
           >
-            Reset to default ship values
-          </Button>
-        </div>
+            <TbVolume />
+          </ActionIcon>
+          <div>
+            <Text fz="xs" c="dimmed" mb={4} ta="center">
+              Low/Avg/High = mean − 1σ / mean / mean + 1σ bands.
+            </Text>
+            <Button
+              size="compact-xs"
+              variant="outline"
+              color="orange"
+              onClick={() => resetShip()}
+              leftSection={<TbRepeat />}
+            >
+              Reset to default ship values
+            </Button>
+          </div>
+        </Group>
       </Group>
     </Box>
   )
