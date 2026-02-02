@@ -1,23 +1,23 @@
 import { MiningStats } from './mining-types.ts'
 
-export type QuantileBands = {
-  p10: number
-  p50: number
-  p90: number
+export type StatBands = {
+  low: number
+  avg: number
+  high: number
 }
 
 export type MiningBands = {
-  residueTotalBands: QuantileBands
-  critBonusTotalBands: QuantileBands
-  cyclesBands: QuantileBands
-  timeBands: QuantileBands
+  residueTotalBands: StatBands
+  critBonusTotalBands: StatBands
+  cyclesBands: StatBands
+  timeBands: StatBands
   deterministicCycles: number
   deterministicTime: number
 }
 
 export type CargoBands = {
-  cargoPerSecondBands: QuantileBands
-  cargoFullTimeBands: QuantileBands
+  cargoPerSecondBands: StatBands
+  cargoFullTimeBands: StatBands
 }
 
 const mulberry32 = (seed: number) => {
@@ -38,24 +38,23 @@ const seedFromString = (value: string) => {
   return Math.abs(hash)
 }
 
-const getQuantile = (values: number[], quantile: number) => {
+const getBands = (values: number[], clampMin = 0): StatBands => {
   if (values.length === 0) {
-    return 0
+    return {
+      low: 0,
+      avg: 0,
+      high: 0,
+    }
   }
-  const sorted = [...values].sort((a, b) => a - b)
-  const position = (sorted.length - 1) * quantile
-  const base = Math.floor(position)
-  const rest = position - base
-  const baseValue = sorted[base]
-  const nextValue = sorted[base + 1] ?? baseValue
-  return baseValue + rest * (nextValue - baseValue)
-}
-
-const getBands = (values: number[]): QuantileBands => {
+  const avg = values.reduce((sum, value) => sum + value, 0) / values.length
+  const variance = values.reduce((sum, value) => sum + (value - avg) ** 2, 0) / values.length
+  const stdDev = Math.sqrt(variance)
+  const low = Math.max(clampMin, avg - stdDev)
+  const high = Math.max(clampMin, avg + stdDev)
   return {
-    p10: getQuantile(values, 0.1),
-    p50: getQuantile(values, 0.5),
-    p90: getQuantile(values, 0.9),
+    low,
+    avg,
+    high,
   }
 }
 
@@ -108,10 +107,10 @@ export const simulateMiningBands = (options: {
   const totalOreVolume = Math.max(0, oreAmount) * oreUnitSize
   if (totalOreVolume === 0 || stats.cycleDuration <= 0 || stats.yieldPerCycle <= 0) {
     return {
-      residueTotalBands: { p10: 0, p50: 0, p90: 0 },
-      critBonusTotalBands: { p10: 0, p50: 0, p90: 0 },
-      cyclesBands: { p10: 0, p50: 0, p90: 0 },
-      timeBands: { p10: 0, p50: 0, p90: 0 },
+      residueTotalBands: { low: 0, avg: 0, high: 0 },
+      critBonusTotalBands: { low: 0, avg: 0, high: 0 },
+      cyclesBands: { low: 0, avg: 0, high: 0 },
+      timeBands: { low: 0, avg: 0, high: 0 },
       deterministicCycles: 0,
       deterministicTime: 0,
     }
@@ -147,15 +146,15 @@ export const simulateMiningBands = (options: {
   const expectedCritTotal = stats.expectedCritBonusPerCycle * turrets * deterministic.cycles
   const expectedResidueTotal = stats.expectedResiduePerCycle * turrets * deterministic.cycles
   const timeBands = {
-    p10: cyclesBands.p10 * stats.cycleDuration,
-    p50: deterministic.time,
-    p90: cyclesBands.p90 * stats.cycleDuration,
+    low: cyclesBands.low * stats.cycleDuration,
+    avg: deterministic.time,
+    high: cyclesBands.high * stats.cycleDuration,
   }
 
   return {
-    residueTotalBands: { ...residueTotalBands, p50: expectedResidueTotal },
-    critBonusTotalBands: { ...critBonusTotalBands, p50: expectedCritTotal },
-    cyclesBands: { ...cyclesBands, p50: deterministic.cycles },
+    residueTotalBands: { ...residueTotalBands, avg: expectedResidueTotal },
+    critBonusTotalBands: { ...critBonusTotalBands, avg: expectedCritTotal },
+    cyclesBands: { ...cyclesBands, avg: deterministic.cycles },
     timeBands,
     deterministicCycles: deterministic.cycles,
     deterministicTime: deterministic.time,
@@ -172,8 +171,8 @@ export const simulateCargoBands = (options: {
   const { cargoSize, stats, turrets, iterations = 2000, seed = 'cargo' } = options
   if (cargoSize <= 0 || stats.cycleDuration <= 0 || stats.yieldPerCycle <= 0) {
     return {
-      cargoPerSecondBands: { p10: 0, p50: 0, p90: 0 },
-      cargoFullTimeBands: { p10: 0, p50: 0, p90: 0 },
+      cargoPerSecondBands: { low: 0, avg: 0, high: 0 },
+      cargoFullTimeBands: { low: 0, avg: 0, high: 0 },
     }
   }
 
@@ -201,14 +200,14 @@ export const simulateCargoBands = (options: {
 
   return {
     cargoPerSecondBands: {
-      p10: Math.min(cargoPerSecondBands.p10, expectedCargoPerSecond),
-      p50: expectedCargoPerSecond,
-      p90: Math.max(cargoPerSecondBands.p90, expectedCargoPerSecond),
+      low: Math.min(cargoPerSecondBands.low, expectedCargoPerSecond),
+      avg: expectedCargoPerSecond,
+      high: Math.max(cargoPerSecondBands.high, expectedCargoPerSecond),
     },
     cargoFullTimeBands: {
-      p10: Math.min(cargoFullTimeBands.p10, expectedCargoFullTime),
-      p50: expectedCargoFullTime,
-      p90: Math.max(cargoFullTimeBands.p90, expectedCargoFullTime),
+      low: Math.min(cargoFullTimeBands.low, expectedCargoFullTime),
+      avg: expectedCargoFullTime,
+      high: Math.max(cargoFullTimeBands.high, expectedCargoFullTime),
     },
   }
 }

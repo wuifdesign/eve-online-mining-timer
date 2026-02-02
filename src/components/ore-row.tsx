@@ -47,11 +47,11 @@ export const OreRow: React.FC<OreRowProps> = ({ index, ship, data }) => {
       }),
     [data.oreAmount, data.id, data.turrets, oreUnitSize, stats],
   )
-  const formatBand = (band: { p10: number; p50: number; p90: number }, options = {}) => {
-    return `${formatNumber(band.p10, options)} / ${formatNumber(band.p50, options)} / ${formatNumber(band.p90, options)}`
+  const formatBand = (band: { low: number; avg: number; high: number }, options = {}) => {
+    return `${formatNumber(band.low, options)} / ${formatNumber(band.avg, options)} / ${formatNumber(band.high, options)}`
   }
-  const formatTimeBand = (band: { p10: number; p50: number; p90: number }) => {
-    return `${secToTime(band.p10)} / ${secToTime(band.p50)} / ${secToTime(band.p90)}`
+  const formatTimeBand = (band: { low: number; avg: number; high: number }) => {
+    return `${secToTime(band.low)} / ${secToTime(band.avg)} / ${secToTime(band.high)}`
   }
   const turretSelect: string[] = []
   for (let i = 1; i <= ship.numberOfTurrets; i++) {
@@ -101,10 +101,10 @@ export const OreRow: React.FC<OreRowProps> = ({ index, ship, data }) => {
         />
       </Grid.Col>
       <Grid.Col span={3} visibleFrom="sm" ff="monospace" fz="xs" ta="center">
-        {formatBand(bands.residueTotalBands, { maximumFractionDigits: 1 })}
+        {formatBand(bands.residueTotalBands, { maximumFractionDigits: 2 })}
       </Grid.Col>
       <Grid.Col span={4} visibleFrom="sm" ff="monospace" fz="xs" ta="center">
-        {formatBand(bands.critBonusTotalBands, { maximumFractionDigits: 1 })}
+        {formatBand(bands.critBonusTotalBands, { maximumFractionDigits: 2 })}
       </Grid.Col>
       <Grid.Col span={4} visibleFrom="sm" ff="monospace" fz="xs" ta="center">
         {formatBand(bands.cyclesBands, { maximumFractionDigits: 2 })}

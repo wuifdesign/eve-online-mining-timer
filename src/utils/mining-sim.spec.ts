@@ -14,7 +14,7 @@ const stats = {
 }
 
 describe('mining-sim', () => {
-  it('produces stable quantile bands for mining depletion', () => {
+  it('produces stable mean/std bands for mining depletion', () => {
     const bandsA = simulateMiningBands({
       oreAmount: 1000,
       oreUnitSize: 1,
@@ -31,16 +31,16 @@ describe('mining-sim', () => {
       iterations: 300,
       seed: 'test-mining',
     })
-    expect(bandsA.cyclesBands.p10).toBeCloseTo(bandsB.cyclesBands.p10, 6)
-    expect(bandsA.cyclesBands.p50).toBeCloseTo(bandsB.cyclesBands.p50, 6)
-    expect(bandsA.cyclesBands.p90).toBeCloseTo(bandsB.cyclesBands.p90, 6)
-    expect(bandsA.timeBands.p10).toBeLessThanOrEqual(bandsA.timeBands.p50)
-    expect(bandsA.timeBands.p50).toBeLessThanOrEqual(bandsA.timeBands.p90)
-    expect(bandsA.timeBands.p50).toBeCloseTo(bandsA.deterministicTime, 6)
-    expect(bandsA.critBonusTotalBands.p50).toBeGreaterThanOrEqual(0)
+    expect(bandsA.cyclesBands.low).toBeCloseTo(bandsB.cyclesBands.low, 6)
+    expect(bandsA.cyclesBands.avg).toBeCloseTo(bandsB.cyclesBands.avg, 6)
+    expect(bandsA.cyclesBands.high).toBeCloseTo(bandsB.cyclesBands.high, 6)
+    expect(bandsA.timeBands.low).toBeLessThanOrEqual(bandsA.timeBands.avg)
+    expect(bandsA.timeBands.avg).toBeLessThanOrEqual(bandsA.timeBands.high)
+    expect(bandsA.timeBands.avg).toBeCloseTo(bandsA.deterministicTime, 6)
+    expect(bandsA.critBonusTotalBands.avg).toBeGreaterThanOrEqual(0)
   })
 
-  it('produces stable quantile bands for cargo fill', () => {
+  it('produces stable mean/std bands for cargo fill', () => {
     const bandsA = simulateCargoBands({
       cargoSize: 10000,
       stats,
@@ -55,12 +55,12 @@ describe('mining-sim', () => {
       iterations: 300,
       seed: 'test-cargo',
     })
-    expect(bandsA.cargoFullTimeBands.p10).toBeCloseTo(bandsB.cargoFullTimeBands.p10, 6)
-    expect(bandsA.cargoFullTimeBands.p50).toBeCloseTo(bandsB.cargoFullTimeBands.p50, 6)
-    expect(bandsA.cargoFullTimeBands.p90).toBeCloseTo(bandsB.cargoFullTimeBands.p90, 6)
-    expect(bandsA.cargoPerSecondBands.p10).toBeLessThanOrEqual(bandsA.cargoPerSecondBands.p50)
-    expect(bandsA.cargoPerSecondBands.p50).toBeLessThanOrEqual(bandsA.cargoPerSecondBands.p90)
-    expect(bandsA.cargoFullTimeBands.p10).toBeLessThanOrEqual(bandsA.cargoFullTimeBands.p50)
-    expect(bandsA.cargoFullTimeBands.p50).toBeLessThanOrEqual(bandsA.cargoFullTimeBands.p90)
+    expect(bandsA.cargoFullTimeBands.low).toBeCloseTo(bandsB.cargoFullTimeBands.low, 6)
+    expect(bandsA.cargoFullTimeBands.avg).toBeCloseTo(bandsB.cargoFullTimeBands.avg, 6)
+    expect(bandsA.cargoFullTimeBands.high).toBeCloseTo(bandsB.cargoFullTimeBands.high, 6)
+    expect(bandsA.cargoPerSecondBands.low).toBeLessThanOrEqual(bandsA.cargoPerSecondBands.avg)
+    expect(bandsA.cargoPerSecondBands.avg).toBeLessThanOrEqual(bandsA.cargoPerSecondBands.high)
+    expect(bandsA.cargoFullTimeBands.low).toBeLessThanOrEqual(bandsA.cargoFullTimeBands.avg)
+    expect(bandsA.cargoFullTimeBands.avg).toBeLessThanOrEqual(bandsA.cargoFullTimeBands.high)
   })
 })

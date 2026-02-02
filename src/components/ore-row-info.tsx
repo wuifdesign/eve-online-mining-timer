@@ -28,20 +28,20 @@ export const OreRowInfo: React.FC = () => {
         Turrets
       </Grid.Col>
       <Grid.Col span={3} ta="center">
-        <Tooltip label="Total m³ for mining the full ore stack">
-          <span>Residue total (P10/50/90)</span>
+        <Tooltip label="Total m³ (low/avg/high = mean ± 1σ) for the full ore stack">
+          <span>Residue total (Low/Avg/High)</span>
         </Tooltip>
       </Grid.Col>
       <Grid.Col span={4} ta="center">
-        <Tooltip label="Total m³ for mining the full ore stack">
-          <span>Crit bonus total (P10/50/90)</span>
+        <Tooltip label="Total m³ (low/avg/high = mean ± 1σ) for the full ore stack">
+          <span>Crit bonus total (Low/Avg/High)</span>
         </Tooltip>
       </Grid.Col>
       <Grid.Col span={4} ta="center">
-        Cycles (P10/50/90)
+        Cycles (Low/Avg/High)
       </Grid.Col>
       <Grid.Col span={7} ta="center">
-        Time (P10/50/90)
+        Time (Low/Avg/High)
       </Grid.Col>
     </Grid>
   )

@@ -21,11 +21,11 @@ export const ShipConfig: React.FC = () => {
       }),
     [ship.cargoSize, ship.numberOfTurrets, ship.name, stats],
   )
-  const formatBand = (band: { p10: number; p50: number; p90: number }, options = {}) => {
-    return `${formatNumber(band.p10, options)} / ${formatNumber(band.p50, options)} / ${formatNumber(band.p90, options)}`
+  const formatBand = (band: { low: number; avg: number; high: number }, options = {}) => {
+    return `${formatNumber(band.low, options)} / ${formatNumber(band.avg, options)} / ${formatNumber(band.high, options)}`
   }
-  const formatTimeBand = (band: { p10: number; p50: number; p90: number }) => {
-    return `${secToTime(band.p10)} / ${secToTime(band.p50)} / ${secToTime(band.p90)}`
+  const formatTimeBand = (band: { low: number; avg: number; high: number }) => {
+    return `${secToTime(band.low)} / ${secToTime(band.avg)} / ${secToTime(band.high)}`
   }
 
   return (
@@ -115,7 +115,7 @@ export const ShipConfig: React.FC = () => {
         </Text>
         <div>
           <Text fz="xs" c="dimmed" mb={4} ta="center">
-            P10/50/90 = 10th / 50th / 90th percentile bands.
+            Low/Avg/High = mean − 1σ / mean / mean + 1σ bands.
           </Text>
           <Button
             size="compact-xs"
