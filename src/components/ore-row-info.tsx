@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Grid } from '@mantine/core'
+import { Grid, Tooltip } from '@mantine/core'
 
 export const OreRowInfo: React.FC = () => {
   return (
@@ -28,10 +28,14 @@ export const OreRowInfo: React.FC = () => {
         Turrets
       </Grid.Col>
       <Grid.Col span={3} ta="center">
-        Residue (P10/50/90)
+        <Tooltip label="Total m³ for mining the full ore stack">
+          <span>Residue total (P10/50/90)</span>
+        </Tooltip>
       </Grid.Col>
       <Grid.Col span={4} ta="center">
-        Crit bonus (P10/50/90)
+        <Tooltip label="Total m³ for mining the full ore stack">
+          <span>Crit bonus total (P10/50/90)</span>
+        </Tooltip>
       </Grid.Col>
       <Grid.Col span={4} ta="center">
         Cycles (P10/50/90)
