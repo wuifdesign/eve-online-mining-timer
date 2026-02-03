@@ -6,6 +6,9 @@ import { oreNames, oreSizes } from '../config/ores.ts'
 import { ShipType } from '../utils/use-ship-store.ts'
 import { secToTime } from '../utils/sec-to-time/sec-to-time.tsx'
 import { GlobalStoreRowType, useOreRows } from '../utils/use-global-store.ts'
+import { formatNumber } from '../utils/format-number/format-number.tsx'
+import { getMiningStats } from '../utils/mining-math.ts'
+import { simulateMiningBands } from '../utils/mining-sim.ts'
 import { Number } from './number.tsx'
 
 export type OreRowType = {
@@ -29,19 +32,35 @@ const oreSelectData = oreNames.map((value) => {
 
 export const OreRow: React.FC<OreRowProps> = ({ index, ship, data }) => {
   const { updateOreRow, deleteOreRow } = useOreRows()
+  const stats = getMiningStats(ship)
 
-  const oreSize = data.oreType ? oreSizes[data.oreType] * data.oreAmount : 0
-  const circles = oreSize / (ship.yieldPerTurret * data.turrets)
-  const durations = Math.round(circles * ship.turretCircleDuration)
-
+  const oreUnitSize = data.oreType ? oreSizes[data.oreType] : 0
+  const oreSize = oreUnitSize * data.oreAmount
+  const bands = React.useMemo(
+    () =>
+      simulateMiningBands({
+        oreAmount: data.oreAmount,
+        oreUnitSize,
+        stats,
+        turrets: data.turrets,
+        seed: data.id,
+      }),
+    [data.oreAmount, data.id, data.turrets, oreUnitSize, stats],
+  )
+  const formatBand = (band: { low: number; avg: number; high: number }, options = {}) => {
+    return `${formatNumber(band.low, options)} / ${formatNumber(band.avg, options)} / ${formatNumber(band.high, options)}`
+  }
+  const formatTimeBand = (band: { low: number; avg: number; high: number }) => {
+    return `${secToTime(band.low)} / ${secToTime(band.avg)} / ${secToTime(band.high)}`
+  }
   const turretSelect: string[] = []
   for (let i = 1; i <= ship.numberOfTurrets; i++) {
     turretSelect.push(i.toString())
   }
 
   return (
-    <Grid align="center" columns={25} gutter="xs" py={5} px={6} bg={index % 2 !== 0 ? 'dark.6' : undefined}>
-      <Grid.Col visibleFrom="sm" span={6}>
+    <Grid align="center" columns={45} gutter="xs" py={7} px={8} bg={index % 2 !== 0 ? 'dark.6' : undefined}>
+      <Grid.Col visibleFrom="sm" span={8}>
         <TextInput required size="xs" defaultValue={data.name} />
       </Grid.Col>
       <Grid.Col span={{ base: 8, sm: 4 }}>
@@ -56,7 +75,7 @@ export const OreRow: React.FC<OreRowProps> = ({ index, ship, data }) => {
           value={data.oreType}
         />
       </Grid.Col>
-      <Grid.Col span={{ base: 7, sm: 3 }}>
+      <Grid.Col span={{ base: 7, sm: 4 }}>
         <NumberInput
           required
           size="xs"
@@ -69,10 +88,10 @@ export const OreRow: React.FC<OreRowProps> = ({ index, ship, data }) => {
           }}
         />
       </Grid.Col>
-      <Grid.Col span={3} visibleFrom="sm" ff="monospace" fz="xs" ta="right" style={{ whiteSpace: 'nowrap' }}>
+      <Grid.Col span={4} visibleFrom="sm" ff="monospace" fz="xs" ta="right" style={{ whiteSpace: 'nowrap' }}>
         <Number maximumFractionDigits={0} value={oreSize} /> m³
       </Grid.Col>
-      <Grid.Col span={{ base: 4, sm: 2 }}>
+      <Grid.Col span={{ base: 4, sm: 3 }}>
         <Select
           required
           size="xs"
@@ -81,13 +100,19 @@ export const OreRow: React.FC<OreRowProps> = ({ index, ship, data }) => {
           value={data.turrets.toString()}
         />
       </Grid.Col>
-      <Grid.Col span={2} visibleFrom="sm" ff="monospace" fz="xs" ta="center">
-        <Number maximumFractionDigits={2} value={circles} />
+      <Grid.Col span={3} visibleFrom="sm" ff="monospace" fz="xs" ta="center">
+        {formatBand(bands.residueTotalBands, { maximumFractionDigits: 2 })}
       </Grid.Col>
-      <Grid.Col span={2} visibleFrom="sm" ff="monospace" fz="sm" fw="bold" ta="center">
-        {secToTime(durations)}
+      <Grid.Col span={4} visibleFrom="sm" ff="monospace" fz="xs" ta="center">
+        {formatBand(bands.critBonusTotalBands, { maximumFractionDigits: 2 })}
       </Grid.Col>
-      <Grid.Col span={{ base: 6, sm: 3 }} ff="monospace" fz="sm">
+      <Grid.Col span={4} visibleFrom="sm" ff="monospace" fz="xs" ta="center">
+        {formatBand(bands.cyclesBands, { maximumFractionDigits: 2 })}
+      </Grid.Col>
+      <Grid.Col span={7} visibleFrom="sm" ff="monospace" fz="xs" fw="bold" ta="center">
+        {formatTimeBand(bands.timeBands)}
+      </Grid.Col>
+      <Grid.Col span={{ base: 6, sm: 4 }} ff="monospace" fz="sm">
         <Group gap="xs" justify="flex-end">
           {data.oreAmount > 0 && (
             <>

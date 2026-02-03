@@ -20,7 +20,7 @@ export const CargoInfo: React.FC<CargoInfoProps> = ({ ship }) => {
   }
 
   return (
-    <Box my="md" p="md" bg="dark.5">
+    <Box my="lg" p="lg" bg="dark.5">
       <Grid justify="space-between">
         <Grid.Col span={{ base: 12, md: 6 }} ta={{ base: 'center', md: 'right' }} order={{ base: 1, md: 2 }}>
           <Text>Cargo used</Text>

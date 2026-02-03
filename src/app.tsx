@@ -29,7 +29,7 @@ export const App: React.FC = () => {
   return (
     <MantineProvider forceColorScheme="dark" theme={theme}>
       <Header />
-      <Container>
+      <Container size="xl">
         <ShipConfig />
         <CargoInfo ship={ship} />
         <div style={{ border: '1px solid var(--mantine-color-dark-4)' }}>

@@ -12,6 +12,28 @@ Utilize a feature to estimate mineral gains, considering actual ore mined and yo
 
 Stay informed about the exact amount required to construct that titan.
 
+## (Nov 2025) Catalyst Mining Update Overview
+
+- Residue, crit bonus, cycles, and time display Low/Avg/High bands (mean ± 1σ).
+- Cargo/sec and cargo full time also show Low/Avg/High bands, updated by ship settings.
+- Residue chance, critical chance, and critical success bonus yield are entered directly.
+
+Want to learn more about those changes? See https://www.eveonline.com/news/view/mining-in-focus-new-ore-and-more
+or take a look at the wiki: https://wiki.eveuniversity.org/Mining
+
+## How to Use (Updated)
+
+1. Paste survey scanner results into the textarea to generate ore rows.
+2. Set ship stats, residue chance, critical chance, and critical success bonus yield.
+3. Use Play/Pause to track depletion timers and cargo usage.
+
+Example scanner input:
+
+```
+Omber	30,000	18,000 m3	6,310,000.00 ISK	39 km
+Omber II-Grade	30,000	18,000 m3	3,920,000.00 ISK	12 km
+```
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.

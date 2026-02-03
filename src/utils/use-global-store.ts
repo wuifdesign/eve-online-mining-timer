@@ -1,9 +1,9 @@
 import { create } from 'zustand'
 import { useShallow } from 'zustand/react/shallow'
 import { oreSizes } from '../config/ores.ts'
-import sound1 from '../assets/audio/sound-1.mp3'
-import sound2 from '../assets/audio/sound-2.mp3'
+import { getMiningStats } from './mining-math.ts'
 import { ScannerResultType } from './parse-scanner-result/parse-scanner-result.tsx'
+import { getStoredSoundSettings, resolveSoundSrc } from './use-sound-settings.ts'
 import { ShipType } from './use-ship-store.ts'
 
 export type GlobalStoreRowType = ScannerResultType & {
@@ -101,37 +101,61 @@ export const startTimerInterval = (ship: ShipType) => {
       return
     }
     lastTickSeconds = getCurrentSeconds()
-    const yieldPerTurret = ship.yieldPerTurret / ship.turretCircleDuration
-    const yieldAllSeconds = yieldPerTurret * secondsPassed
+    const stats = getMiningStats(ship)
+    const depletionPerSecond = stats.depletionPerSecond
+    const cargoPerSecond = stats.cargoPerSecond
     const rows = useGlobalStore.getState().oreRows
     let currentCargo = useGlobalStore.getState().currentCargo
     const compressedCargo = useGlobalStore.getState().compressedCargo
     let shouldUpdate = false
-    for (const row of rows) {
-      if (row.running) {
-        shouldUpdate = true
-        const rowYield = yieldAllSeconds * row.turrets
-        const oreSize = oreSizes[row.oreType]
-        const amount = Math.min(rowYield / oreSize, row.oreAmount)
-        row.oreAmount -= amount
-        if (row.oreAmount <= 0) {
-          row.running = false
-          new Audio(sound1).play().then(() => {
+    const nextRows = rows.map((row) => {
+      if (!row.running) {
+        return row
+      }
+      shouldUpdate = true
+      const oreUnitSize = oreSizes[row.oreType]
+      if (!oreUnitSize) {
+        return row
+      }
+      const rowDepletionVolume = depletionPerSecond * secondsPassed * row.turrets
+      const remainingVolume = row.oreAmount * oreUnitSize
+      const actualDepletionVolume = Math.min(rowDepletionVolume, remainingVolume)
+      const amount = actualDepletionVolume / oreUnitSize
+      const nextOreAmount = row.oreAmount - amount
+      let nextRunning: boolean = row.running
+      if (nextOreAmount <= 0) {
+        nextRunning = false
+        const { oreDepletedSoundId } = getStoredSoundSettings()
+        const soundSrc = resolveSoundSrc(oreDepletedSoundId)
+        if (soundSrc) {
+          new Audio(soundSrc).play().then(() => {
             // sound is playing
           })
         }
-        currentCargo += amount * oreSize
       }
-    }
+      if (depletionPerSecond > 0) {
+        const cargoRatio = cargoPerSecond / depletionPerSecond
+        currentCargo += actualDepletionVolume * cargoRatio
+      }
+      return {
+        ...row,
+        oreAmount: nextOreAmount,
+        running: nextRunning,
+      }
+    })
     if (shouldUpdate) {
       if (!cargoAlertPlayed && currentCargo + compressedCargo > ship.cargoSize * 0.95) {
         cargoAlertPlayed = true
-        new Audio(sound2).play().then(() => {
-          // sound is playing
-        })
+        const { cargoFullSoundId } = getStoredSoundSettings()
+        const soundSrc = resolveSoundSrc(cargoFullSoundId)
+        if (soundSrc) {
+          new Audio(soundSrc).play().then(() => {
+            // sound is playing
+          })
+        }
       }
       useGlobalStore.getState().setCurrentCargo(currentCargo)
-      useGlobalStore.getState().setOreRows(rows)
+      useGlobalStore.getState().setOreRows(nextRows)
     }
   }, 1000)
 }
