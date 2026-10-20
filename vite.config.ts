@@ -1,30 +1,21 @@
 import { defineConfig } from 'vitest/config'
-import react from '@vitejs/plugin-react-swc'
-import eslintPlugin from 'vite-plugin-eslint'
+import { preact } from '@preact/preset-vite'
+import tailwindcss from '@tailwindcss/vite'
 
 // https://vitejs.dev/config/
-export default defineConfig((env) => {
-  return {
-    plugins: [
-      react(),
-      env.mode !== 'test' &&
-        eslintPlugin({
-          cache: false,
-          include: ['./src/**/*.ts', './src/**/*.tsx'],
-          exclude: [],
-        }),
-    ],
-    css: {
-      modules: {
-        localsConvention: 'camelCaseOnly',
-      },
+export default defineConfig({
+  // preact preset also aliases react/react-dom to preact/compat for zustand
+  plugins: [preact(), tailwindcss()],
+  css: {
+    modules: {
+      localsConvention: 'camelCaseOnly',
     },
-    base: './',
-    build: {
-      outDir: 'docs',
-    },
-    test: {
-      globals: true,
-    },
-  }
+  },
+  base: './',
+  build: {
+    outDir: 'docs',
+  },
+  test: {
+    globals: true,
+  },
 })

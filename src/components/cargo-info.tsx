@@ -1,55 +1,80 @@
-import * as React from 'react'
-import { Box, Button, Grid, MantineColor, Text } from '@mantine/core'
-import { TbCircleMinus, TbResize } from 'react-icons/tb'
+import type { FunctionComponent } from 'preact'
 import { useCurrentCargo } from '../utils/use-global-store.ts'
 import { ShipType } from '../utils/use-ship-store.ts'
 import { Number } from './number.tsx'
+import { Button } from './ui/button.tsx'
+import { cx } from './ui/cx.ts'
+import { Icon } from './ui/icon.tsx'
+import { captionHeadingClasses } from './ui/typography.ts'
 
 export type CargoInfoProps = {
   ship: ShipType
 }
 
-export const CargoInfo: React.FC<CargoInfoProps> = ({ ship }) => {
+export const CargoInfo: FunctionComponent<CargoInfoProps> = ({ ship }) => {
   const { currentCargo, resetCurrentCargo, compressCurrentCargo } = useCurrentCargo()
 
-  let color: MantineColor = 'green'
-  if (currentCargo > ship.cargoSize * 0.95) {
-    color = 'red'
-  } else if (currentCargo > ship.cargoSize * 0.75) {
-    color = 'yellow'
+  const ratio = ship.cargoSize > 0 ? currentCargo / ship.cargoSize : 0
+  let toneText = 'text-fg'
+  let toneFill = 'bg-accent'
+  let status = ''
+  if (ratio > 0.95) {
+    toneText = 'text-danger'
+    toneFill = 'bg-danger'
+    status = 'Cargo full'
+  } else if (ratio > 0.75) {
+    toneText = 'text-warn'
+    toneFill = 'bg-warn'
+    status = 'Almost full'
   }
 
   return (
-    <Box my="lg" p="lg" bg="dark.5">
-      <Grid justify="space-between">
-        <Grid.Col span={{ base: 12, md: 6 }} ta={{ base: 'center', md: 'right' }} order={{ base: 1, md: 2 }}>
-          <Text>Cargo used</Text>
-          <Text size="lg" fw="bold" ff="monospace" c={color}>
-            <Number value={currentCargo} maximumFractionDigits={0} /> m³
-          </Text>
-          <Text fz="xs" mt={-7} fw="bold" ff="monospace" c="dimmed">
-            of <Number value={ship.cargoSize} /> m³
-          </Text>
-        </Grid.Col>
-        <Grid.Col span={{ base: 12, md: 6 }} ta={{ base: 'center', md: 'left' }} order={{ base: 2, md: 1 }}>
-          <Button leftSection={<TbCircleMinus />} color="orange" variant="outline" onClick={() => resetCurrentCargo()}>
-            Empty Cargo
+    <section aria-labelledby="cargo-heading" className="rounded-xl border border-line bg-panel p-4 md:p-5">
+      <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
+        <div>
+          <h2 id="cargo-heading" className={cx('mb-1', captionHeadingClasses)}>
+            Cargo hold {status && <span className={cx('ml-1.5', toneText)}>· {status}</span>}
+          </h2>
+          <p className="flex items-baseline gap-2 tabular">
+            <span className={cx('text-3xl font-semibold tracking-tight', toneText)}>
+              <Number value={currentCargo} maximumFractionDigits={0} />
+            </span>
+            <span className="text-sm text-muted">
+              / <Number value={ship.cargoSize} /> m³
+            </span>
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <Button size="sm" leftSection={<Icon name="package-export" />} onClick={() => resetCurrentCargo()}>
+            Empty
           </Button>
-          <Button
-            leftSection={<TbResize />}
-            ml={5}
-            color="orange"
-            variant="outline"
-            onClick={() => compressCurrentCargo()}
-          >
-            Compress Cargo
+          <Button size="sm" leftSection={<Icon name="arrows-minimize" />} onClick={() => compressCurrentCargo()}>
+            Compress
           </Button>
-          <Text mt={4} c="dimmed" fz="sm">
-            Empty your cargo upon jetting into space or unloading at a station. Compress your cargo if you have an Orca
-            or Porpoise on your fleet you can reduce cargo size by x100
-          </Text>
-        </Grid.Col>
-      </Grid>
-    </Box>
+        </div>
+      </div>
+      <div
+        role="meter"
+        aria-label="Cargo used"
+        aria-valuemin={0}
+        aria-valuemax={ship.cargoSize}
+        aria-valuenow={Math.round(currentCargo)}
+        aria-valuetext={`${Math.round(currentCargo).toLocaleString('en-US')} of ${ship.cargoSize.toLocaleString('en-US')} m³`}
+        className="mt-4 h-2 overflow-hidden rounded-full bg-canvas"
+      >
+        {/* slides a full-width bar instead of animating width: no layout work on every tick, and the rounded end keeps its shape */}
+        <div
+          className={cx(
+            'h-full rounded-full transition-transform duration-700 ease-out motion-reduce:transition-none',
+            toneFill,
+          )}
+          style={{ transform: `translateX(${Math.min(100, ratio * 100) - 100}%)` }}
+        />
+      </div>
+      <p className="mt-3 text-xs text-subtle">
+        Empty your cargo after unloading. Compress it when a fleet Porpoise, Orca or Rorqual compresses your hold (ore
+        to 1%, ice to 10%).
+      </p>
+    </section>
   )
 }

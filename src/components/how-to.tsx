@@ -1,39 +1,58 @@
-import * as React from 'react'
-import { Anchor, Box, List, Text } from '@mantine/core'
+import type { FunctionComponent } from 'preact'
+import { modKey } from '../utils/mod-key.ts'
 
-export const HowTo: React.FC = () => {
+const linkClasses = 'text-accent underline decoration-accent/40 underline-offset-4 hover:decoration-accent'
+
+export const HowTo: FunctionComponent = () => {
   return (
-    <Box my="lg" p="lg" bg="dark.5">
-      <Text c="white" fw="bold">
-        How to Use
-      </Text>
-      <Text size="sm">Utilize the survey scanner results to generate pre-filled rows.</Text>
-      <Text size="sm">
-        Copy the selected survey scanner result with <b>CTRL + C</b> and paste it into the textarea above with{' '}
-        <b>CTRL + V</b>.
-      </Text>
-      <Text c="white" fw="bold" mt="md">
-        Mining Update Notes
-      </Text>
-      <List size="sm" spacing={4} withPadding>
-        <List.Item>Mining lasers and strip miners now run faster cycles with proportional yield per cycle.</List.Item>
-        <List.Item>Critical yields add bonus ore to your cargo without reducing asteroid volume.</List.Item>
-        <List.Item>Mining residue and compression changes can affect depletion rate and hauling.</List.Item>
-      </List>
-      <Text size="sm">
-        References:{' '}
-        <Anchor
-          href="https://www.eveonline.com/news/view/mining-in-focus-new-ore-and-more"
-          target="_blank"
-          rel="noreferrer"
-        >
-          CCP update
-        </Anchor>
-        {' · '}
-        <Anchor href="https://wiki.eveuniversity.org/Mining" target="_blank" rel="noreferrer">
-          EVE University wiki
-        </Anchor>
-      </Text>
-    </Box>
+    <section className="grid gap-8 px-1 py-2 text-sm leading-relaxed text-muted md:grid-cols-2">
+      <div>
+        <h2 className="mb-2 text-sm font-semibold text-fg">How to use</h2>
+        <p className="max-w-[65ch]">
+          Use the survey scanner results to generate pre-filled rows. Copy the selected survey scanner result with{' '}
+          <b className="font-medium text-fg">{modKey} + C</b> and paste it into the field above with{' '}
+          <b className="font-medium text-fg">{modKey} + V</b>. Press start on the asteroid you lock to count it down.
+        </p>
+      </div>
+      <div>
+        <h2 className="mb-2 text-sm font-semibold text-fg">Mining update notes</h2>
+        <ul className="max-w-[65ch] list-disc space-y-1 pl-5 marker:text-subtle">
+          <li>
+            Since Catalyst (Nov 2025) mining lasers and strip miners cycle 4× faster with a quarter of the yield per
+            cycle. Ice harvesters keep their cycle time. Enter the current values from Show Info on the fitted module.
+          </li>
+          <li>
+            Critical successes add bonus ore to your cargo without reducing the asteroid. Each turret rolls its own.
+          </li>
+          <li>
+            Only lasers, strip miners and ice harvesters can crit. Mining drones and gas harvesters can&rsquo;t, so
+            leave drone yield out of the ship values.
+          </li>
+          <li>
+            Residue destroys extra ore in the asteroid without reducing your cargo, so rocks empty faster than your hold
+            fills.
+          </li>
+          <li>
+            Prismaticite from phased asteroid fields only mines at full yield while a Mobile Phase Anchor is active. The
+            timer assumes it is.
+          </li>
+        </ul>
+        <p className="mt-3">
+          References:{' '}
+          <a
+            className={linkClasses}
+            href="https://www.eveonline.com/news/view/catalyst-expansion-notes"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Catalyst expansion notes
+          </a>
+          ,{' '}
+          <a className={linkClasses} href="https://wiki.eveuniversity.org/Mining" target="_blank" rel="noreferrer">
+            EVE University Wiki
+          </a>
+        </p>
+      </div>
+    </section>
   )
 }

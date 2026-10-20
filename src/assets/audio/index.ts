@@ -5,7 +5,7 @@ import sound4 from './sound-4.mp3'
 import sound5 from './sound-5.mp3'
 import sound6 from './sound-6.mp3'
 import sound7 from './sound-7.mp3'
-import sound8 from './sound-8.m4a'
+import sound8 from './sound-8.mp3'
 
 export type SoundOption = {
   id: string

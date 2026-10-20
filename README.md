@@ -2,30 +2,27 @@
 
 ## Status
 
-[![release-version](https://img.shields.io/badge/v0.0.1-Live-success.svg)](https://wuifdesign.github.io/eve-online-mining-timer)
+[![status](https://img.shields.io/badge/status-Live-success.svg)](https://wuifdesign.github.io/eve-online-mining-timer)
 
-Monitor your mining lasers and strip miners to enhance your yield efficiency.
+Track your mining lasers, strip miners and ice harvesters so no cycle runs on an empty asteroid.
 
-Keep a record of your ore yields, and share the information with your corporation or friends.
+- Paste survey scanner results to get one row per asteroid.
+- Each asteroid counts down while you mine it, with the time left and a likely range based on your crit and residue
+  chances.
+- A cargo hold tracker fills as you mine, with an alert sound when the hold is almost full and an alert when an
+  asteroid is depleted.
+- Compress the tracked cargo when a fleet Porpoise, Orca or Rorqual compresses your hold (ore to 1%, ice to 10%).
+- Running timers survive a page reload. Gaps of up to 15 minutes are caught up, after longer breaks the timers pause.
+- Deleted or cleared rows can be brought back with undo.
 
-Utilize a feature to estimate mineral gains, considering actual ore mined and your skills.
+## How to Use
 
-Stay informed about the exact amount required to construct that titan.
-
-## (Nov 2025) Catalyst Mining Update Overview
-
-- Residue, crit bonus, cycles, and time display Low/Avg/High bands (mean ± 1σ).
-- Cargo/sec and cargo full time also show Low/Avg/High bands, updated by ship settings.
-- Residue chance, critical chance, and critical success bonus yield are entered directly.
-
-Want to learn more about those changes? See https://www.eveonline.com/news/view/mining-in-focus-new-ore-and-more
-or take a look at the wiki: https://wiki.eveuniversity.org/Mining
-
-## How to Use (Updated)
-
-1. Paste survey scanner results into the textarea to generate ore rows.
-2. Set ship stats, residue chance, critical chance, and critical success bonus yield.
-3. Use Play/Pause to track depletion timers and cargo usage.
+1. Select rows in the survey scanner, copy them and paste them into the app to create one row per asteroid.
+2. Set the ship values: yield per turret, cycle duration, turrets, cargo hold, residue chance, residue volume, critical
+   chance and crit bonus yield. Enter the **current per-cycle values from Show Info on the fitted module**, with all
+   skills, modules, implants and boosts applied. Since Catalyst, cycles are 4× shorter with a quarter of the yield per
+   cycle, so values from older guides or the previous version of this tool are too high.
+3. Press start on the asteroid you lock to count it down, and pause it when you switch rocks.
 
 Example scanner input:
 
@@ -34,33 +31,42 @@ Omber	30,000	18,000 m3	6,310,000.00 ISK	39 km
 Omber II-Grade	30,000	18,000 m3	3,920,000.00 ISK	12 km
 ```
 
-# React + TypeScript + Vite
+Supported ores: standard asteroid ores including Mercoxit, empire border (A0) ores, Triglavian ores, nullsec
+prospecting ores, Prismaticite, moon ores, ice and mission ores. Graded variants (e.g. "II-Grade") map to their base
+ore. An ore the app doesn't know yet still works when the paste includes the m³ column, its unit volume is taken from
+there.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## How the numbers are calculated
 
-Currently, two official plugins are available:
+Since the Catalyst expansion (Nov 2025):
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Mining lasers and strip miners cycle 4× faster with a quarter of the yield per cycle. Ice harvesters keep their cycle
+  time.
+- A **critical success** adds bonus ore to your cargo without taking it from the asteroid. Base chance 1%, base bonus
+  200% of the cycle yield. Only lasers, strip miners and ice harvesters can crit, mining drones and gas harvesters
+  can't.
+- **Residue** destroys extra ore in the asteroid without reducing your cargo, so rocks empty faster than your hold
+  fills.
+- Every turret rolls crit and residue on its own, every cycle.
 
-## Expanding the ESLint configuration
+Per turret and cycle, with `Y` as the yield per cycle:
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+```
+cargo per cycle     = Y × (1 + crit chance × crit bonus yield)
+asteroid depletion  = Y × (1 + residue chance × residue volume)
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+"Asteroid empty" uses the depletion, "cargo full" uses the cargo. The low and high values next to each result are the
+mean ± 1σ of a simulation that rolls crit and residue for every turret and cycle.
+
+More detail and sources: [research/eve-mining-mechanics.md](research/eve-mining-mechanics.md),
+the [Catalyst expansion notes](https://www.eveonline.com/news/view/catalyst-expansion-notes),
+[Mining in Focus: New Ore & More](https://www.eveonline.com/news/view/mining-in-focus-new-ore-and-more) and the
+[EVE University Wiki](https://wiki.eveuniversity.org/Mining).
+
+## Tech stack
+
+- [Preact](https://preactjs.com/) + TypeScript, built with [Vite](https://vite.dev/) (`@preact/preset-vite`)
+- [Tailwind CSS](https://tailwindcss.com/) v4 with custom UI components in `src/components/ui/`
+- `preact/compat` is aliased for the React-based dependency (zustand)
+- Icons are local SVG files in `src/assets/icons/`, rendered with `src/components/ui/icon.tsx`: [Tabler Icons](https://tabler.io/icons) (MIT) and the GitHub mark from [Font Awesome](https://fontawesome.com/) (CC BY 4.0)

@@ -3,6 +3,7 @@ import { parseScannerResult } from './parse-scanner-result.tsx'
 
 describe('parseScannerResult', () => {
   it('should parse standard ores', () => {
+    // prettier-ignore
     expect(
       parseScannerResult(
         `
@@ -59,7 +60,6 @@ Vitreous Mercoxit\t100\t4000 m3\t1,234 m
       `,
       ),
     ).toEqual([
-      /* eslint-disable */
       { id: expect.any(String), name: 'Veldspar - 1,234 m', distance: 1234, oreType: 'Veldspar', oreAmount: 100 },
       { id: expect.any(String), name: 'Dark Ochre - 1,234 m', distance: 1234, oreType: 'Dark Ochre', oreAmount: 100 },
       { id: expect.any(String), name: 'White Glaze - 1,234 m', distance: 1234, oreType: 'White Glaze', oreAmount: 100 },
@@ -110,29 +110,74 @@ Vitreous Mercoxit\t100\t4000 m3\t1,234 m
       { id: expect.any(String), name: 'Mercoxit - 1,234 m', distance: 1234, oreType: 'Mercoxit', oreAmount: 100 },
       { id: expect.any(String), name: 'Magma Mercoxit - 1,234 m', distance: 1234, oreType: 'Mercoxit', oreAmount: 100 },
       { id: expect.any(String), name: 'Vitreous Mercoxit - 1,234 m', distance: 1234, oreType: 'Mercoxit', oreAmount: 100 },
-      /* eslint-enable */
     ])
   })
 
   it('should parse some data', () => {
+    // prettier-ignore
     expect(
       parseScannerResult(
-        /* eslint-disable */
+        /* oxlint-disable */
         `
 Solid Pyroxeres\t20 834\t6 250 m3\t4 801 m
 Solid Pyroxeres\t22 478\t6 743 m3\t6 431 m
 Solid Pyroxeres\t24 325\t7 297 m3\t13 km
 Solid Pyroxeres\t3 230\t969 m3\t15 km
       `,
-        /* eslint-enable */
+        /* oxlint-enable */
       ),
     ).toEqual([
-      /* eslint-disable */
       { id: expect.any(String), name: 'Solid Pyroxeres - 4 801 m', distance: 4801, oreType: 'Pyroxeres', oreAmount: 20834 },
       { id: expect.any(String), name: 'Solid Pyroxeres - 6 431 m', distance: 6431, oreType: 'Pyroxeres', oreAmount: 22478 },
       { id: expect.any(String), name: 'Solid Pyroxeres - 13 km', distance: 13, oreType: 'Pyroxeres', oreAmount: 24325 },
       { id: expect.any(String), name: 'Solid Pyroxeres - 15 km', distance: 15, oreType: 'Pyroxeres', oreAmount: 3230 },
-      /* eslint-enable */
+    ])
+  })
+
+  it('should parse Catalyst and Exordium ores', () => {
+    // prettier-ignore
+    expect(
+      parseScannerResult(
+        `
+Prismaticite\t250\t10,000 m3\t12 km
+Phased Prismaticite\t250\t10,000 m3\t14 km
+Pyroxeres  0-Grade\t1,000\t300 m3\t8 km
+      `,
+      ),
+    ).toEqual([
+      { id: expect.any(String), name: 'Prismaticite - 12 km', distance: 12, oreType: 'Prismaticite', oreAmount: 250 },
+      { id: expect.any(String), name: 'Phased Prismaticite - 14 km', distance: 14, oreType: 'Prismaticite', oreAmount: 250 },
+      { id: expect.any(String), name: 'Pyroxeres  0-Grade - 8 km', distance: 8, oreType: 'Pyroxeres', oreAmount: 1000 },
+    ])
+  })
+
+  it('should parse nullsec prospecting ores', () => {
+    // prettier-ignore
+    expect(
+      parseScannerResult(
+        `
+Griemeer\t100\t80 m3\t1,234 m
+Hezorime II-Grade\t100\t500 m3\t1,234 m
+Nocxite\t100\t400 m3\t1,234 m
+Ueganite IV-Grade\t100\t500 m3\t1,234 m
+      `,
+      ).map((row) => row.oreType),
+    ).toEqual(['Griemeer', 'Hezorime', 'Nocxite', 'Ueganite'])
+  })
+
+  it('should keep unknown ores using the pasted volume', () => {
+    // prettier-ignore
+    expect(
+      parseScannerResult(
+        `
+Shiny New Ore\t2,000\t5,000 m3\t9 km
+Other New Ore\t4\t10.5 m3\t9 km
+Unknown Without Volume\t2,000\tfoo\t9 km
+      `,
+      ),
+    ).toEqual([
+      { id: expect.any(String), name: 'Shiny New Ore - 9 km', distance: 9, oreType: 'Shiny New Ore', oreAmount: 2000, unitVolume: 2.5 },
+      { id: expect.any(String), name: 'Other New Ore - 9 km', distance: 9, oreType: 'Other New Ore', oreAmount: 4, unitVolume: 2.625 },
     ])
   })
 })

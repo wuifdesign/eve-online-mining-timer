@@ -1,38 +1,40 @@
-import * as React from 'react'
-import { Box, Button, Group, Text } from '@mantine/core'
-import { FaGithub } from 'react-icons/fa6'
+import type { FunctionComponent } from 'preact'
 import logo from '../assets/logo.png'
+import { Button } from './ui/button.tsx'
+import { Icon } from './ui/icon.tsx'
 
-export const Header: React.FC = () => {
+export const Header: FunctionComponent = () => {
   return (
-    <Box p="sm" bg="dark.9">
-      <header>
-        <Group justify="space-between" h="100%">
-          <Group>
-            <img alt="EVE Online - Mining Timer" src={logo} height={28} />
-            <Text fw="bold">EVE Online - Mining Timer</Text>
-          </Group>
-          <Group visibleFrom="sm">
-            <Button
-              target="_blank"
-              component="a"
-              href="https://github.com/wuifdesign/eve-online-mining-timer/issues"
-              variant="default"
-            >
-              Issues
-            </Button>
-            <Button
-              target="_blank"
-              component="a"
-              href="https://github.com/wuifdesign/eve-online-mining-timer"
-              variant="default"
-              leftSection={<FaGithub />}
-            >
-              Github
-            </Button>
-          </Group>
-        </Group>
-      </header>
-    </Box>
+    <header className="border-b border-line">
+      <div className="mx-auto flex h-14 max-w-[1440px] items-center justify-between gap-4 px-4 md:px-6">
+        <div className="flex min-w-0 items-center gap-3">
+          {/* 47×48 source, shown at 24px tall for 2x screens */}
+          <img alt="" src={logo} width={23} height={24} className="h-6 w-auto" />
+          <h1 className="truncate text-[15px] font-semibold">
+            <span className="hidden text-muted sm:inline">EVE Online </span>Mining Timer
+          </h1>
+        </div>
+        <nav className="flex gap-1">
+          <Button
+            target="_blank"
+            href="https://github.com/wuifdesign/eve-online-mining-timer/issues"
+            variant="ghost"
+            size="sm"
+            leftSection={<Icon name="message-report" />}
+          >
+            Issues
+          </Button>
+          <Button
+            target="_blank"
+            href="https://github.com/wuifdesign/eve-online-mining-timer"
+            variant="ghost"
+            size="sm"
+            leftSection={<Icon name="github" />}
+          >
+            GitHub
+          </Button>
+        </nav>
+      </div>
+    </header>
   )
 }

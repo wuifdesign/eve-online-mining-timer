@@ -1,18 +1,34 @@
-import { v4 as uuidv4 } from 'uuid'
 import { OreType } from '../../@types/ore.type.ts'
 import { oreNames } from '../../config/ores.ts'
 
 export type ScannerResultType = {
   id: string
   name: string
-  oreType: OreType
+  // an OreType, or the pasted name of an ore missing from the table (then unitVolume is set)
+  oreType: OreType | string
   distance: number
   oreAmount: number
+  // unit volume read from the paste, only kept for ores missing from the table
+  unitVolume?: number
 }
 
 const stringToNumber = (value: string) => {
   const cleaned = value.replace(/\u00a0/g, '').replace(/[^\d]/g, '')
   return parseInt(cleaned || '0')
+}
+
+// "18,000 m3" / "6 250 m3" / "6.420 m3": separators are thousands, a trailing 1-2 digit group is a fraction
+const parseVolume = (value: string | undefined) => {
+  if (!value || !/m3|m³/i.test(value)) {
+    return 0
+  }
+  const cleaned = value
+    .replace(/\u00a0/g, '')
+    .replace(/\s*m(3|³)\s*$/i, '')
+    .replace(/\s/g, '')
+  const fraction = cleaned.match(/[.,](\d{1,2})$/)
+  const whole = stringToNumber(fraction ? cleaned.slice(0, -fraction[0].length) : cleaned)
+  return fraction ? whole + parseInt(fraction[1]) / 10 ** fraction[1].length : whole
 }
 
 const getOreTypeFromName = (value: string): OreType => {
@@ -47,15 +63,23 @@ export const parseScannerResult = (input: string) => {
     }
     const oreName = parts[0].trim()
     const mappedOreType = getOreTypeFromName(oreName)
+    const oreAmount = stringToNumber(parts[1])
+    let unitVolume: number | undefined
     if (!oreNames.includes(mappedOreType)) {
-      continue
+      // an ore missing from the table still works when the paste has its volume column
+      const volume = parseVolume(parts[2])
+      if (volume <= 0 || oreAmount <= 0) {
+        continue
+      }
+      unitVolume = volume / oreAmount
     }
     output.push({
-      id: uuidv4(),
+      id: crypto.randomUUID(),
       name: `${parts[0]} - ${parts[parts.length - 1]}`.replace(/\u00a0/g, ' '),
       distance: stringToNumber(parts[parts.length - 1]),
-      oreType: getOreTypeFromName(mappedOreType),
-      oreAmount: stringToNumber(parts[1]),
+      oreType: unitVolume ? oreName : mappedOreType,
+      oreAmount,
+      ...(unitVolume ? { unitVolume } : {}),
     })
   }
   return output

@@ -1,4 +1,4 @@
-import { useLocalStorage } from '@mantine/hooks'
+import { useLocalStorage } from './use-local-storage.ts'
 import { defaultSoundIds, soundOptionById } from '../assets/audio/index.ts'
 
 export type SoundSettings = {
@@ -17,6 +17,8 @@ const getDefaultSettings = (): SoundSettings => ({
   cargoFullSoundId: defaultSoundIds.cargoFull,
 })
 
+const defaultSettings = getDefaultSettings()
+
 const sanitizeSettings = (settings: Partial<SoundSettings> | null | undefined): SoundSettings => {
   const defaults = getDefaultSettings()
   return {
@@ -32,11 +34,7 @@ const sanitizeSettings = (settings: Partial<SoundSettings> | null | undefined): 
 }
 
 export const useSoundSettings = () => {
-  const [settings, setSettings] = useLocalStorage<SoundSettings>({
-    key: SOUND_SETTINGS_KEY,
-    defaultValue: getDefaultSettings(),
-    getInitialValueInEffect: false,
-  })
+  const [settings, setSettings] = useLocalStorage<SoundSettings>(SOUND_SETTINGS_KEY, defaultSettings)
 
   return {
     settings: sanitizeSettings(settings),

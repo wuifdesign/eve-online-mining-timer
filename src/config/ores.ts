@@ -25,6 +25,15 @@ export const oreSizes = {
   Ytirium: 0.6,
   Kylixium: 1.2,
 
+  // Nullsec prospecting ores (YC126)
+  Griemeer: 0.8,
+  Hezorime: 5,
+  Nocxite: 4,
+  Ueganite: 5,
+
+  // Erratic Ore (Catalyst, phased asteroid fields)
+  Prismaticite: 40,
+
   // Mission Ores
   Augumene: 0.3,
   Banidine: 0.1,
@@ -70,3 +79,24 @@ export const oreSizes = {
 }
 
 export const oreNames = Object.keys(oreSizes).sort()
+
+// ice compresses to 10% of its volume, every other ore to 1%
+const iceOres: ReadonlySet<string> = new Set([
+  'Clear Icicle',
+  'White Glaze',
+  'Blue Ice',
+  'Glacial Mass',
+  'Glare Crust',
+  'Dark Glitter',
+  'Gelidus',
+  'Krystallos',
+])
+
+export const getCompressionRatio = (oreType: string) => {
+  return iceOres.has(oreType) ? 10 : 100
+}
+
+// known ores use the table, unknown ones the unit volume taken from the scanner paste
+export const getOreUnitSize = (oreType: string, unitVolume?: number) => {
+  return oreSizes[oreType as keyof typeof oreSizes] ?? unitVolume ?? 0
+}

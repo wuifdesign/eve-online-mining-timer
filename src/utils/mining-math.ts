@@ -1,6 +1,7 @@
 import { MiningStats } from './mining-types.ts'
 import { ShipType } from './use-ship-store.ts'
 
+// 1x for every module and Type A/B crystal, Type C crystals raise it
 const BASE_RESIDUE_MULTIPLIER = 1
 const BASE_CRIT_BONUS_MULTIPLIER = 2
 
@@ -27,13 +28,14 @@ export const getMiningStats = (
   cargoPerSecond: number
 } => {
   const baseYieldPerCycle = ship.yieldPerTurret
-  const baseCycleDuration = ship.turretCircleDuration
+  const baseCycleDuration = ship.turretCycleDuration
 
   const yieldPerCycle = baseYieldPerCycle
   const cycleDuration = baseCycleDuration
 
   const residueChance = clamp((ship.residueChancePercent ?? 0) / 100, 0, 1)
-  const residueMultiplier = Math.max(0, BASE_RESIDUE_MULTIPLIER)
+  // ships saved before the field existed fall back to the base value
+  const residueMultiplier = Math.max(0, ship.residueMultiplier ?? BASE_RESIDUE_MULTIPLIER)
 
   const expectedResiduePerCycle = yieldPerCycle * residueChance * residueMultiplier
   const asteroidDepletionPerCycle = yieldPerCycle + expectedResiduePerCycle

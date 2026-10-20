@@ -72,9 +72,17 @@ type SimCycleResult = {
 }
 
 const simulateCycle = (stats: MiningStats, turrets: number, rand: () => number): SimCycleResult => {
-  const cycleYield = stats.yieldPerCycle * turrets
-  const residueVolume = rand() < stats.residueChance ? cycleYield * stats.residueMultiplier : 0
-  const critBonusVolume = rand() < stats.critChance ? cycleYield * stats.critBonusMultiplier : 0
+  // each turret cycles independently in-game, so crit and residue are rolled per turret
+  let residueVolume = 0
+  let critBonusVolume = 0
+  for (let i = 0; i < turrets; i += 1) {
+    if (rand() < stats.residueChance) {
+      residueVolume += stats.yieldPerCycle * stats.residueMultiplier
+    }
+    if (rand() < stats.critChance) {
+      critBonusVolume += stats.yieldPerCycle * stats.critBonusMultiplier
+    }
+  }
   return {
     residueVolume,
     critBonusVolume,
@@ -136,11 +144,14 @@ export const simulateMiningBands = (options: {
     let critTotal = 0
     while (remainingVolume > 0 && cycles < 100000) {
       const result = simulateCycle(stats, turrets, rng)
-      residueTotal += result.residueVolume
-      critTotal += result.critBonusVolume
       const depletion = stats.yieldPerCycle * turrets + result.residueVolume
+      // the last cycle only counts the share it needs: stopping a module early still delivers ore for the time it ran,
+      // same as the deterministic average and the live countdown
+      const share = Math.min(1, remainingVolume / depletion)
+      residueTotal += result.residueVolume * share
+      critTotal += result.critBonusVolume * share
       remainingVolume -= depletion
-      cycles += 1
+      cycles += share
     }
     residueTotals.push(residueTotal)
     critTotals.push(critTotal)
@@ -193,8 +204,11 @@ export const simulateCargoBands = (options: {
     let cycles = 0
     while (cargo < cargoSize && cycles < 100000) {
       const result = simulateCycle(stats, turrets, rng)
-      cargo += stats.yieldPerCycle * turrets + result.critBonusVolume
-      cycles += 1
+      const gain = stats.yieldPerCycle * turrets + result.critBonusVolume
+      // the last cycle only counts the share it needs to fill the hold
+      const share = Math.min(1, (cargoSize - cargo) / gain)
+      cargo += gain * share
+      cycles += share
     }
     const time = cycles * stats.cycleDuration
     cargoFullTimes.push(time)

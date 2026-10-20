@@ -1,8 +1,12 @@
-import * as React from 'react'
-import { ActionIcon, Card, Group, Modal, SimpleGrid, Stack, Text, Title } from '@mantine/core'
-import { TbPlayerPlay, TbVolume } from 'react-icons/tb'
+import type { FunctionComponent } from 'preact'
+import { useEffect } from 'preact/hooks'
 import { SoundOption, soundOptions } from '../assets/audio/index.ts'
 import { useSoundSettings } from '../utils/use-sound-settings.ts'
+import { IconButton } from './ui/button.tsx'
+import { Modal } from './ui/modal.tsx'
+import { cx } from './ui/cx.ts'
+import { Icon } from './ui/icon.tsx'
+import { captionHeadingClasses } from './ui/typography.ts'
 
 type SoundSettingsModalProps = {
   opened: boolean
@@ -15,62 +19,76 @@ type SoundGridProps = {
   onSelect: (soundId: string) => void
 }
 
+// one preview at a time across both grids: starting a sound cuts off the one still playing
+let preview: HTMLAudioElement | null = null
+
+const stopPreview = () => {
+  preview?.pause()
+  preview = null
+}
+
 const playSound = (sound: SoundOption) => {
+  stopPreview()
   const audio = new Audio(sound.src)
-  audio.play().then(() => {
-    // sound is playing
+  preview = audio
+  audio.play().catch(() => {
+    // playback blocked or file failed to load, nothing to preview
   })
 }
 
-const SoundGrid: React.FC<SoundGridProps> = ({ label, selectedId, onSelect }) => {
+const SoundGrid: FunctionComponent<SoundGridProps> = ({ label, selectedId, onSelect }) => {
   return (
-    <Stack gap="xs">
-      <Title order={5}>{label}</Title>
-      <SimpleGrid cols={{ base: 2, sm: 4 }} spacing="sm">
+    <fieldset className="flex flex-col gap-2.5">
+      <legend className={cx('mb-2.5', captionHeadingClasses)}>{label}</legend>
+      <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
         {soundOptions.map((sound) => {
           const isSelected = sound.id === selectedId
           return (
-            <Card
+            <div
               key={sound.id}
-              withBorder
-              padding="xs"
-              bg={isSelected ? 'dark.4' : 'dark.6'}
-              style={{ cursor: 'pointer' }}
-              onClick={() => onSelect(sound.id)}
+              className={cx(
+                'flex items-center justify-between gap-2.5 rounded-lg border py-1.5 pr-1.5 pl-3 transition-colors duration-150 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-accent',
+                isSelected ? 'border-accent bg-accent/10' : 'border-line bg-canvas hover:border-line-strong',
+              )}
             >
-              <Group justify="space-between" gap="xs" align="center">
-                <Text size="sm" fw={isSelected ? 700 : 500}>
-                  {sound.label}
-                </Text>
-                <Group gap={6}>
-                  <ActionIcon
-                    variant="subtle"
-                    color="gray"
-                    onClick={(event) => {
-                      event.stopPropagation()
-                      playSound(sound)
-                    }}
-                    title={`Play ${sound.label}`}
-                  >
-                    <TbPlayerPlay size={16} />
-                  </ActionIcon>
-                  {isSelected && <TbVolume size={14} />}
-                </Group>
-              </Group>
-            </Card>
+              <label className="flex grow cursor-pointer items-center text-sm">
+                <input
+                  type="radio"
+                  name={label}
+                  value={sound.id}
+                  checked={isSelected}
+                  onChange={() => onSelect(sound.id)}
+                  className="sr-only"
+                />
+                <span className={isSelected ? 'font-semibold text-fg' : 'text-muted'}>{sound.label}</span>
+              </label>
+              <div className="flex items-center gap-1.5">
+                <IconButton onClick={() => playSound(sound)} title={`Play ${sound.label}`}>
+                  <Icon name="player-play" size={16} />
+                </IconButton>
+                {isSelected && <Icon name="volume" size={14} className="text-accent" />}
+              </div>
+            </div>
           )
         })}
-      </SimpleGrid>
-    </Stack>
+      </div>
+    </fieldset>
   )
 }
 
-export const SoundSettingsModal: React.FC<SoundSettingsModalProps> = ({ opened, onClose }) => {
+export const SoundSettingsModal: FunctionComponent<SoundSettingsModalProps> = ({ opened, onClose }) => {
   const { settings, setSettings } = useSoundSettings()
 
+  // closing the dialog also silences a preview that is still playing
+  useEffect(() => {
+    if (!opened) {
+      stopPreview()
+    }
+  }, [opened])
+
   return (
-    <Modal opened={opened} onClose={onClose} title="Alert sounds" centered size="lg">
-      <Stack gap="md">
+    <Modal opened={opened} onClose={onClose} title="Alert sounds">
+      <div className="flex flex-col gap-6">
         <SoundGrid
           label="Ore depleted"
           selectedId={settings.oreDepletedSoundId}
@@ -81,7 +99,7 @@ export const SoundSettingsModal: React.FC<SoundSettingsModalProps> = ({ opened, 
           selectedId={settings.cargoFullSoundId}
           onSelect={(soundId) => setSettings({ ...settings, cargoFullSoundId: soundId })}
         />
-      </Stack>
+      </div>
     </Modal>
   )
 }
