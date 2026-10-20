@@ -1,5 +1,5 @@
 import { useLocalStorage } from './use-local-storage.ts'
-import { defaultSoundIds, soundOptionById } from '../assets/audio/index.ts'
+import { defaultSoundIds, soundOptionById } from '../assets/audio'
 
 export type SoundSettings = {
   oreDepletedSoundId: string

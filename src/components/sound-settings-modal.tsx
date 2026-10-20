@@ -1,6 +1,6 @@
 import type { FunctionComponent } from 'preact'
 import { useEffect } from 'preact/hooks'
-import { SoundOption, soundOptions } from '../assets/audio/index.ts'
+import { SoundOption, soundOptions } from '../assets/audio'
 import { useSoundSettings } from '../utils/use-sound-settings.ts'
 import { IconButton } from './ui/button.tsx'
 import { Modal } from './ui/modal.tsx'
