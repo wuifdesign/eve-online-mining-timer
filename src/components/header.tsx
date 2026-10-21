@@ -11,7 +11,7 @@ export const Header: FunctionComponent = () => {
           {/* 47×48 source, shown at 24px tall for 2x screens */}
           <img alt="" src={logo} width={23} height={24} className="h-6 w-auto" />
           <h1 className="truncate text-[15px] font-semibold">
-            <span className="hidden text-muted sm:inline">EVE Online </span>Mining Timer
+            <span className="text-muted max-sm:sr-only">EVE Online </span>Mining Timer
           </h1>
         </div>
         <nav className="flex gap-1">

@@ -2,16 +2,75 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>EVE Online - Mining Timer</title>
+    <title>EVE Online Mining Timer – Asteroid Depletion & Cargo Hold Tracker</title>
     <meta
       name="description"
-      content="Keep track of your mining lasers, strip miners and ice harvesters to optimize your yield. Never run empty mining cycles again."
+      content="Free EVE Online mining timer: paste your survey scanner results to see when each asteroid is depleted and when your cargo hold is full. Supports lasers, strip miners, ice harvesters, crits and residue."
     />
+    <link rel="canonical" href="https://wuifdesign.github.io/eve-online-mining-timer/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="author" content="Marumis Wuif" />
+    <meta name="theme-color" content="#0b1015" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="/logo-full.png" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="EVE Online Mining Timer" />
+    <meta property="og:title" content="EVE Online Mining Timer" />
+    <meta
+      property="og:description"
+      content="Paste survey scanner results and get a countdown per asteroid plus a cargo hold tracker. Never run empty mining cycles again."
+    />
+    <meta property="og:url" content="https://wuifdesign.github.io/eve-online-mining-timer/" />
+    <meta property="og:image" content="https://wuifdesign.github.io/eve-online-mining-timer/og-image.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="EVE Online Mining Timer showing asteroid countdowns and a cargo hold progress bar"
+    />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="EVE Online Mining Timer" />
+    <meta
+      name="twitter:description"
+      content="Paste survey scanner results and get a countdown per asteroid plus a cargo hold tracker."
+    />
+    <meta name="twitter:image" content="https://wuifdesign.github.io/eve-online-mining-timer/og-image.png" />
+    <meta
+      name="twitter:image:alt"
+      content="EVE Online Mining Timer showing asteroid countdowns and a cargo hold progress bar"
+    />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "EVE Online Mining Timer",
+        "url": "https://wuifdesign.github.io/eve-online-mining-timer/",
+        "description": "Turns EVE Online survey scanner results into per-asteroid countdowns and a cargo hold tracker for mining lasers, strip miners and ice harvesters, including critical success and residue chances.",
+        "applicationCategory": "GameApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript",
+        "isAccessibleForFree": true,
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "image": "https://wuifdesign.github.io/eve-online-mining-timer/og-image.png",
+        "author": { "@type": "Person", "name": "Marumis Wuif" },
+        "about": { "@type": "VideoGame", "name": "EVE Online" }
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
+    <noscript>
+      <h1>EVE Online Mining Timer</h1>
+      <p>
+        Paste your survey scanner results to get a countdown per asteroid and a cargo hold tracker for mining lasers,
+        strip miners and ice harvesters. This tool needs JavaScript to run.
+      </p>
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
     <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
   </body>
